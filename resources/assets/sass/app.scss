@@ -1,14 +1,9 @@
-
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-
 // Variables
 @import 'variables';
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// MDBootstrap
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~mdbvue/build/scss/mdb.scss";
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-}
+// Pace
+@import "~pace-js/themes/blue/pace-theme-flash.css"
