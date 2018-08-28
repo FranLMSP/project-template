@@ -1,22 +1,56 @@
 <template>
-    <div>
+    <container fluid>
         <br>
         <row>
-            <col md="6" sm="12">
-
-            </col>
+            <column col="12" md="6" class="offset-md-3">
+                <card>
+                  <card-body>
+                    <form @submit.prevent="authenticate">
+                      <p class="h4 text-center py-4">Iniciar sesión</p>
+                      <div class="grey-text">
+                        <md-input label="Usuario" icon="user" group type="text"/>
+                        <md-input label="Contraseña" icon="lock" group type="password" validate/>
+                      </div>
+                      <div class="text-center py-4 mt-3">
+                        <btn color="cyan" type="submit">Iniciar Sesión</btn>
+                      </div>
+                    </form>
+                  </card-body>
+                </card>
+            </column>
         </row>
-    </div>
+    </container>
+
 </template>
 
 <script type="text/javascript">
     import {login} from '../../../helpers/auth.js'
 
-    import {Row} from 'mdbvue'
+    import {
+        Row,
+        Column,
+        Container,
+        Card,
+        CardImg,
+        CardBody,
+        CardTitle,
+        CardText,
+        MdInput,
+        Btn
+    } from 'mdbvue'
 
     export default {
         components: {
             Row,
+            Column,
+            Container,
+            Card,
+            CardImg,
+            CardBody,
+            CardTitle,
+            CardText,
+            MdInput,
+            Btn
         },
         data() {
             return {
