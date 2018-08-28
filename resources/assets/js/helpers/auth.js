@@ -5,6 +5,7 @@ export function login(credentials) {
                 res(response.data)
             })
             .catch( err => {
+                console.log(err)
                 rej('Usuario o contraseña inválidos')
             })
     })

@@ -14,7 +14,5 @@ export const routes = [
             requiresAuth: true,
             title: 'Inicio'
         },
-        children: [
-        ]
     }
 ]

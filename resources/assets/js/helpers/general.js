@@ -33,7 +33,8 @@ export function initialize(store, router) {
     })
 
 
-    axios.interceptors.response.use(null, error => {
+    axios.interceptors.response.use(response => {return response}, error => {
+        console.log(error)
         if(error.response.status == 401) {
             store.commit('logout')
 
@@ -42,10 +43,6 @@ export function initialize(store, router) {
 
         if(error.response.status == 403) {
             router.push('/');
-            M.toast({
-                html: 'Usted no tiene privilegios para ver este módulo',
-                classes: 'red'
-            })
         }
 
         return Promise.reject(error)
