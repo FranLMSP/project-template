@@ -1,15 +1,22 @@
 <template>
     <div>
         <br>
-        test
+        <row>
+            <col md="6" sm="12">
+
+            </col>
+        </row>
     </div>
 </template>
 
 <script type="text/javascript">
     import {login} from '../../../helpers/auth.js'
 
+    import {Row} from 'mdbvue'
+
     export default {
         components: {
+            Row,
         },
         data() {
             return {
