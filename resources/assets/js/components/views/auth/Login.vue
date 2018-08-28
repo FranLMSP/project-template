@@ -84,7 +84,6 @@
                         this.$router.push({path: '/'})
                     })
                     .catch( err => {
-                        console.log(err)
                         this.error = err
                         this.$store.commit('loginFailed', {err})
                     })
