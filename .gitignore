@@ -12,3 +12,10 @@ npm-debug.log
 yarn-error.log
 .env
 .phpunit.result.cache
+
+# Tenía intención de dejar estor archivos sin ignorar para evitar complicaciones
+# Pero debido a que son compilados y en modo de desarrollo son bastante pesados
+# Decidí ignorarlos para que el repositorio no se hiciera tan pesado por cada commit
+
+public/js/app.js
+public/css/app.css
