@@ -18,19 +18,11 @@
           <a class="logo-wrapper"><img alt="" class="img-fluid"/></a>
           <list-group class="list-group-flush">
             <router-link to="/dashboard" @click.native="activeItem = 1">
-              <list-group-item :action="true" :class="activeItem === 1 && 'active'"><fa icon="pie-chart" class="mr-3"/>Dashboard</list-group-item>
+              <list-group-item :action="true" :class="activeItem === 1 && 'active'"><fa icon="pie-chart" class="mr-3"/>Test</list-group-item>
             </router-link>
             <router-link to="/profile" @click.native="activeItem = 2">
-              <list-group-item :action="true" :class="activeItem === 2 && 'active'"><fa icon="user" class="mr-3"/>Profile</list-group-item>
+              <list-group-item :action="true" :class="activeItem === 2 && 'active'"><fa icon="user" class="mr-3"/>Test</list-group-item>
             </router-link>
-            <router-link to="/tables"  @click.native="activeItem = 3">
-              <list-group-item :action="true" :class="activeItem === 3 && 'active'"><fa icon="table" class="mr-3"/>Tables</list-group-item>
-            </router-link>
-            <router-link to="/maps" @click.native="activeItem = 4">
-              <list-group-item :action="true" :class="activeItem === 4 && 'active'"><fa icon="map" class="mr-3"/>Maps</list-group-item>
-            </router-link>
-            <router-link to="/404" @click.native="activeItem = 5">
-              <list-group-item :action="true" :class="activeItem === 5 && 'active'"><fa icon="exclamation" class="mr-3"/>404</list-group-item>
             </router-link>
           </list-group>
         </div>
