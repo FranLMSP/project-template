@@ -102,4 +102,86 @@ class PermissionsTest extends TestCase
         $this->json('GET', '/api/permissions/users/')
             ->assertStatus(200);
     }
+
+    /**
+     * Permisos pueden ser asignados a un rol.
+     *
+     * @test
+     */
+    public function permissions_can_be_assigned_to_role()
+    {
+        $this->withoutExceptionHandling();
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se crea un rol
+        $role = factory(Role::class)->create();
+
+        //Se crea un módulo
+        $module = factory(Module::class)->create([
+            'name' => 'Nombre del módulo',
+            'description' => 'Descripción del módulo',
+            'url' => 'permissions/roles/{role}',
+            'api' => true,
+        ]);
+        $moduleTwo = factory(Module::class)->create([
+            'name' => 'Nombre del módulo',
+            'description' => 'Descripción del módulo',
+            'url' => 'permissions/roles',
+            'api' => true,
+        ]);
+
+        //Se crea un metodo
+        $method = factory(Method::class)->create([
+            'name' => 'PUT',
+            'description' => 'Modificar'
+        ]);
+        //Se crea otro método que es el que se va a personalizar
+        $methodTwo = factory(Method::class)->create([
+            'name' => 'GET',
+            'description' => 'Listar/Obtener'
+        ]);
+
+        //Se asigna una acción para que el usuario pueda modificar el rol
+        $action = factory(MethodModuleUser::class)->create([
+            'method_id' => $method->id,
+            'module_id' => $module->id,
+            'user_id' => $user->id,
+        ]);
+
+        //Ya el usuario debería poder modificar permisos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->json('PUT', '/api/permissions/roles/'.$role->id, [
+            'permissions' => [ //array de permisos
+                [
+                    'method_id' => $method->id,
+                    'module_id' => $module->id,
+                ],
+                [
+                    'method_id' => $methodTwo->id,
+                    'module_id' => $moduleTwo->id,
+                ],
+            ],
+        ])->assertStatus(200);
+
+
+        //Nos aseguramos de que se haya guardado bien en la base de datos
+        $this->assertDatabaseHas('method_module_role', [
+            'method_id' => $method->id,
+            'module_id' => $module->id,
+            'role_id' => $role->id,
+        ]);
+        $this->assertDatabaseHas('method_module_role', [
+            'method_id' => $methodTwo->id,
+            'module_id' => $moduleTwo->id,
+            'role_id' => $role->id,
+        ]);
+        //Solo deberían haber dos registros porque se borraron los anteriores
+        $this->assertTrue(MethodModuleRole::count() == 2);
+    }
 }
