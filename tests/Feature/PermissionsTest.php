@@ -37,39 +37,34 @@ class PermissionsTest extends TestCase
         ]);
 
         //Se crea un módulo
-        $module = factory(Route::class)->create([
+        $module = factory(Module::class)->create([
             'name' => 'Nombre del módulo',
-            'url' => 'permisos',
-        ]);
-
-        //Se crean una rutas API
-        $route = factory(Route::class)->create([
+            'description' => 'Descripción del módulo',
             'url' => 'permisos/usuarios/{id}',
-            'description' => 'Permisos de usuario especifico',
-            'module_id' => $module->id,
+            'api' => true,
         ]);
-        $routeTwo = factory(Route::class)->create([
-            'url' => 'permisos/usuarios/',
-            'description' => 'Listar usuarios y permisos',
-            'module_id' => $module->id,
+        $moduleTwo = factory(Module::class)->create([
+            'name' => 'Nombre del módulo',
+            'description' => 'Descripción del módulo',
+            'url' => 'permisos/usuarios',
+            'api' => true,
         ]);
 
         //Se crea un metodo
-        $method = factory(Route::class)->create([
+        $method = factory(Method::class)->create([
             'name' => 'PUT',
             'description' => 'Modificar'
         ]);
         //Se crea otro método que es el que se va a personalizar
-        $methodTwo = factory(Route::class)->create([
+        $methodTwo = factory(Method::class)->create([
             'name' => 'GET',
             'description' => 'Listar/Obtener'
         ]);
 
         //Se asigna una acción
-        $action = factory(Route::class)->create([
-            'name' => 'Modificar permisos',
+        $action = factory(ActionUser::class)->create([
             'method_id' => $method->id,
-            'route_id' => $route->id,
+            'module_id' => $module->id,
             'user_id' => $user->id,
         ]);
 
@@ -77,30 +72,12 @@ class PermissionsTest extends TestCase
         $this->json('PUT', '/api/permisos/usuarios/'.$user->id, [
             'permissions' => [ //array de permisos
                 [
-                    'name' => 'Nombre personalizado del permiso',
                     'method_id' => $method->id,
-                    'route_id' => $route->id,
+                    'module_id' => $module->id,
                 ],
                 [
-                    'name' => 'Nombre personalizado segundo del permiso',
                     'method_id' => $methodTwo->id,
-                    'route_id' => $routeTwo->id,
-                ],
-            ],
-        ])->assertStatus(200);
-
-        //Ya el usuario debería poder modificar permisos.
-        $this->json('POST', '/api/permisos/usuarios/'.$user->id, [
-            'permissions' => [ //array de permisos
-                [
-                    'name' => 'Nombre personalizado del permiso',
-                    'method_id' => $method->id,
-                    'route_id' => $route->id,
-                ],
-                [
-                    'name' => 'Nombre personalizado segundo del permiso',
-                    'method_id' => $methodTwo->id,
-                    'route_id' => $route->id,
+                    'module_id' => $moduleTwo->id,
                 ],
             ],
         ])->assertStatus(200);
