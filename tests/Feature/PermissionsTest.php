@@ -83,6 +83,21 @@ class PermissionsTest extends TestCase
             ],
         ])->assertStatus(200);
 
+
+        //Nos aseguramos de que se haya guardado bien en la base de datos
+        $this->assertDatabaseHas('method_module_user', [
+            'method_id' => $method->id,
+            'module_id' => $module->id,
+            'user_id' => $user->id,
+        ]);
+        $this->assertDatabaseHas('method_module_user', [
+            'method_id' => $methodTwo->id,
+            'module_id' => $moduleTwo->id,
+            'user_id' => $user->id,
+        ]);
+        //Solo deberían haber dos registros porque se borraron los anteriores
+        $this->assertTrue(MethodModuleUser::count() == 2);
+
         //Se prueba que el nuevo permiso funcione
         $this->json('GET', '/api/permissions/users/')
             ->assertStatus(200);
