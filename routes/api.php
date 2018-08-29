@@ -27,10 +27,12 @@ Route::group([
 
 });
 
+//Todas las rutas que van a estar protegidas por sesión
 Route::group([
-    'middleware' => 'jwt.auth'
+    'middleware' => 'jwt.auth',
 ], function ($router) {
 
+    //Todas las rutas que van a estar protegidas por permisos
     Route::group([
         'middleware' => CheckPermission::class
     ], function ($router) {
@@ -38,8 +40,9 @@ Route::group([
         Route::group([
             'prefix' => 'permissions'
         ], function($router) {
+
             Route::resources([
-                '/users' => 'UserPermissionController'
+                'users' => 'UserPermissionController'
             ]);
         });
 
