@@ -32,6 +32,8 @@ class PermissionsTest extends TestCase
             'username' => 'admin',
             'password' => bcrypt('123456')
         ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
 
         //Se crea un módulo
         $module = factory(Module::class)->create([
@@ -66,7 +68,8 @@ class PermissionsTest extends TestCase
         ]);
 
         //Ya el usuario debería poder modificar permisos.
-        $this->json('PUT', '/api/permisos/usuarios/'.$user->id, [
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->json('PUT', '/api/permisos/usuarios/'.$user->id, [
             'permissions' => [ //array de permisos
                 [
                     'method_id' => $method->id,

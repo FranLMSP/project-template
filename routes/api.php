@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 
+use App\Http\Middleware\CheckPermission;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,6 +30,16 @@ Route::group([
 Route::group([
     'middleware' => 'jwt.auth'
 ], function ($router) {
+
+    Route::group([
+        'middleware' => CheckPermission::class
+    ], function ($router) {
+
+        Route::match(['post', 'put'], 'permisos/usuarios/{user}', function() {
+            echo 'hi';
+        });
+
+    });
 
     //Esta ruta es usada para probar la sesión
     Route::get('protected', function() { 
