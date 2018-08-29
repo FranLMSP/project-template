@@ -40,13 +40,13 @@ class PermissionsTest extends TestCase
         $module = factory(Module::class)->create([
             'name' => 'Nombre del módulo',
             'description' => 'Descripción del módulo',
-            'url' => 'permisos/usuarios/{user}',
+            'url' => 'permissions/users/{user}',
             'api' => true,
         ]);
         $moduleTwo = factory(Module::class)->create([
             'name' => 'Nombre del módulo',
             'description' => 'Descripción del módulo',
-            'url' => 'permisos/usuarios',
+            'url' => 'permissions/users',
             'api' => true,
         ]);
 
@@ -70,7 +70,7 @@ class PermissionsTest extends TestCase
 
         //Ya el usuario debería poder modificar permisos.
         $this->withHeaders(["Authorization" => 'Bearer '.$token])
-        ->json('PUT', '/api/permisos/usuarios/'.$user->id.'/?v=a', [
+        ->json('PUT', '/api/permissions/users/'.$user->id, [
             'permissions' => [ //array de permisos
                 [
                     'method_id' => $method->id,
@@ -84,7 +84,7 @@ class PermissionsTest extends TestCase
         ])->assertStatus(200);
 
         //Se prueba que el nuevo permiso funcione
-        $this->json('GET', '/api/permisos/usuarios/')
+        $this->json('GET', '/api/permissions/users/')
             ->assertStatus(200);
     }
 }

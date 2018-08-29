@@ -35,12 +35,12 @@ Route::group([
         'middleware' => CheckPermission::class
     ], function ($router) {
 
-        Route::match(['post', 'put'], 'permisos/usuarios/{user}', function() {
-            echo 'hi';
-        });
-
-        Route::get('permisos/usuarios', function() {
-
+        Route::group([
+            'prefix' => 'permissions'
+        ], function($router) {
+            Route::resources([
+                '/users' => 'UserPermissionController'
+            ]);
         });
 
     });
