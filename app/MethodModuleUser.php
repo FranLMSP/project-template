@@ -20,17 +20,17 @@ class MethodModuleUser extends Pivot
 
     public function method()
     {
-        $this->belongsTo(Method::class);
+        return $this->belongsTo(Method::class);
     }
 
     public function module()
     {
-        $this->belongsTo(Module::class);
+        return $this->belongsTo(Module::class);
     }
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
 }

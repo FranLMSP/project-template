@@ -39,6 +39,10 @@ Route::group([
             echo 'hi';
         });
 
+        Route::get('permisos/usuarios', function() {
+
+        });
+
     });
 
     //Esta ruta es usada para probar la sesión

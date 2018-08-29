@@ -27,6 +27,7 @@ class PermissionsTest extends TestCase
      */
     public function permissions_can_be_assigned_to_user()
     {
+        $this->withoutExceptionHandling();
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
@@ -39,7 +40,7 @@ class PermissionsTest extends TestCase
         $module = factory(Module::class)->create([
             'name' => 'Nombre del módulo',
             'description' => 'Descripción del módulo',
-            'url' => 'permisos/usuarios/{id}',
+            'url' => 'permisos/usuarios/{user}',
             'api' => true,
         ]);
         $moduleTwo = factory(Module::class)->create([
@@ -69,7 +70,7 @@ class PermissionsTest extends TestCase
 
         //Ya el usuario debería poder modificar permisos.
         $this->withHeaders(["Authorization" => 'Bearer '.$token])
-        ->json('PUT', '/api/permisos/usuarios/'.$user->id, [
+        ->json('PUT', '/api/permisos/usuarios/'.$user->id.'/?v=a', [
             'permissions' => [ //array de permisos
                 [
                     'method_id' => $method->id,
