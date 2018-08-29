@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->callMany([
             UsersTableSeeder::class,
+            ModulesTableSeeder::class,
         ]);
     }
 
