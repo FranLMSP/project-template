@@ -7,11 +7,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\User;
-use App\Role;
-use App\ActionRole;
-use App\ActionUser;
+use App\MethodModuleUser;
 use App\Module;
-use App\Route;
 use App\Method;
 
 /**
@@ -62,7 +59,7 @@ class PermissionsTest extends TestCase
         ]);
 
         //Se asigna una acción
-        $action = factory(ActionUser::class)->create([
+        $action = factory(MethodModuleUser::class)->create([
             'method_id' => $method->id,
             'module_id' => $module->id,
             'user_id' => $user->id,
