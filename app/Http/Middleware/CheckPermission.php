@@ -12,14 +12,6 @@ use App\MethodModuleUser;
 
 class CheckPermission
 {
-
-    protected $router;
-
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -32,7 +24,7 @@ class CheckPermission
         //Metodo HTTP
         $method = $request->method();
         //ruta que buscaremos en la BD
-        $path = $this->router->getRoutes()->match($request)->uri;
+        $path = $request->route()->uri;
         $path = str_replace('api/', '', $path);
 
         //Buscamos en la base de datos si tiene los permisos

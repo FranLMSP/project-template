@@ -68,11 +68,8 @@ class UserPermissionController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //Por alguna razón no quiere funcionar el Implicit Binding
-        $user = User::findOrFail($id);
-
         $request->validate([
             'permissions' => 'present|array|min:0',
             'permissions.*.module_id' => 'required|exists:modules,id',
