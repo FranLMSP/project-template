@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Role;
+use App\Module;
+use App\Method;
 use App\MethodModuleRole;
 use Illuminate\Http\Request;
 
@@ -57,7 +59,13 @@ class RolePermissionController extends Controller
      */
     public function create()
     {
-        //
+        $modules = Module::where('module_id', NULL)->get();
+        $methods = Method::get();
+
+        return response()->json([
+            'modules' => $modules,
+            'methods' => $methods
+        ]);
     }
 
     /**

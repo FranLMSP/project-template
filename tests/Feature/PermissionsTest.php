@@ -468,13 +468,12 @@ class PermissionsTest extends TestCase
     }
 
     /**
-    * Permisos de un solo rol puede ser listado.
+    * Datos para crear permisos de usuario pueden ser listados.
     *
     * @test
     */
     public function user_permission_create_data_can_be_listed()
     {
-        $this->withoutExceptionHandling();
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
@@ -507,6 +506,97 @@ class PermissionsTest extends TestCase
         //Se prueba que se listen correctamente los datos.
         $this->withHeaders(["Authorization" => 'Bearer '.$token])
         ->get('/api/permissions/users/create')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'modules' => [
+                [
+                    'id' => $module->id,
+                    'name' => $module->name,
+                    'url' => $module->url,
+                    'icon' => $module->icon,
+                    'priority' => $module->priority,
+                    'description' => $module->description,
+                    'api' => $module->api,
+                    'active' => $module->active,
+                    'module_id' => $module->module_id,
+                    'childs' => []
+                ],
+                [
+                    'id' => $moduleTwo->id,
+                    'name' => $moduleTwo->name,
+                    'url' => $moduleTwo->url,
+                    'icon' => $moduleTwo->icon,
+                    'priority' => $moduleTwo->priority,
+                    'description' => $moduleTwo->description,
+                    'api' => $moduleTwo->api,
+                    'active' => $moduleTwo->active,
+                    'module_id' => $moduleTwo->module_id,
+                    'childs' => [
+                        [
+                            'id' => $moduleThree->id,
+                            'name' => $moduleThree->name,
+                            'url' => $moduleThree->url,
+                            'icon' => $moduleThree->icon,
+                            'priority' => $moduleThree->priority,
+                            'description' => $moduleThree->description,
+                            'api' => $moduleThree->api,
+                            'active' => $moduleThree->active,
+                            'module_id' => $moduleThree->module_id,
+                            'childs' => []
+                        ]
+                    ]
+                ]
+            ],
+            'methods' => [
+                [
+                    'id' => $method->id,
+                    'name' => $method->name,
+                    'description' => $method->description
+                ]
+            ]
+        ]);
+    }
+
+
+    /**
+    * Datos para crear permisos de rol pueden ser listados.
+    *
+    * @test
+    */
+    public function role_permission_create_data_can_be_listed()
+    {
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $method = factory(Method::class)->create([
+            'name' => 'GET'
+        ]);
+        $module = factory(Module::class)->create([
+            'url' => 'permissions/roles/create',
+            'module_id' => NULL,
+        ]);
+        $moduleTwo = factory(Module::class)->create(['module_id' => NULL]);
+
+        factory(MethodModuleUser::class)->create([
+            'method_id' => $method->id,
+            'module_id' => $module->id,
+            'user_id' => $user->id
+        ]);
+
+        //Se crean otros dos módulos para probar que se pueden listar los hijos
+        $moduleThree = factory(Module::class)->create([
+            'module_id' => $moduleTwo->id
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/roles/create')
         ->assertStatus(200)
         ->assertExactJson([
             'modules' => [
