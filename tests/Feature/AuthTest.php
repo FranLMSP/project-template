@@ -9,6 +9,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User;
 use Illuminate\Support\Facades\DB;
 
+/**
+* Este test se va a encargar de probar si un usuario
+* puede iniciar o cerrar sesión por medio de la API
+* con sus respectivos JsonWebToken.
+*
+*/
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,13 +28,13 @@ class AuthTest extends TestCase
     {
         //Crear un usuario
         factory(User::class)->create([
-            'username' => 'biblioteca',
+            'username' => 'admin',
             'password' => bcrypt('123456')
         ]);
 
         //Hacer una petición de tipo POST a la ruta de login
         $this->json('POST', '/api/auth/login', [
-            'username' => 'biblioteca', //con este usuario
+            'username' => 'admin', //con este usuario
             'password' => '123456' //y esta clave
         ])->assertStatus(200) //Si el servidor responde con status 200, inició sesión correctaiemte
         //Espera que regrese los datos del token
@@ -49,7 +55,7 @@ class AuthTest extends TestCase
     {
         //Se crea un usuario
         factory(User::class)->create([
-            'username' => 'biblioteca',
+            'username' => 'admin',
             'password' => bcrypt('123456')
         ]);
 
@@ -69,13 +75,13 @@ class AuthTest extends TestCase
     {
         //Se crea un usuario
         factory(User::class)->create([
-            'username' => 'biblioteca',
+            'username' => 'admin',
             'password' => bcrypt('123456')
         ]);
 
         //Inicia sesión
         $this->post('/api/auth/login', [
-            'username' => 'biblioteca',
+            'username' => 'admin',
             'password' => '123456'
         ]);
 
