@@ -432,7 +432,7 @@ class PermissionsTest extends TestCase
         ->get('/api/permissions/roles/'.$role->id)
         ->assertStatus(200)
         ->assertExactJson([
-            'user' => [
+            'role' => [
                 'id' => $role->id,
                 'name' => $role->name,
                 'description' => $role->description,
