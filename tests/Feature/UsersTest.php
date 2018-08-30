@@ -7,22 +7,61 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\User;
+use App\Role;
+use App\Module;
+use App\Method;
+use App\MethodModuleUser;
 
 /**
-* Este test se va a encargar de probar el CRUD de usuarios.
-* Se probará si se pueden crear y modificar usuarios mediante
-* la API y heredar privilegios de los roles.
-*/
+ * Este test se va a encargar de probar el CRUD de usuarios.
+ * Se probará si se pueden crear y modificar usuarios mediante
+ * la API y heredar privilegios de los roles.
+ *
+ */
 class UsersTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
-     * Permisos pueden ser asignados a un usuario.
+     * Datos necesarios para crear usuarios pueden ser cargados.
      *
      * @test
      */
-    public function testExample()
+    public function user_create_data_can_be_listed()
     {
-        $this->assertTrue(true);
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users/create',
+                'method' => 'GET'
+            ]
+        ]);
+
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/users/create')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'roles' => [
+                [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description
+                ]
+            ]
+        ]);
     }
 
     /**
