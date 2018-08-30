@@ -893,6 +893,44 @@ class PermissionsTest extends TestCase
         ]);
     }
 
+    /**
+    * Usuario no puede realizar acciones si no tiene permisos.
+    *
+    * @test
+    */
+    public function user_cannot_request_protected_routes_without_permissions()
+    {
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/users/')
+        ->assertStatus(403);
+
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->post('/api/permissions/users/')
+        ->assertStatus(403);
+
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/permissions/users/'.$user->id)
+        ->assertStatus(403);
+
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/users/'.$user->id.'/edit')
+        ->assertStatus(403);
+
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/users/create')
+        ->assertStatus(403);
+
+    }
+
 
     /**
     * Permisos de todos los usuarios pueden ser listados.
