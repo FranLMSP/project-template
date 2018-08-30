@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Role;
+use App\MethodModuleUser;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -41,7 +42,52 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'username' => 'required|unique:users',
+            'email' => 'required|unique:users',
+            'password' => 'required|min:8',
+            'repeatPassword' => 'same:password',
+            'role_id' => 'required|exists:roles,id'
+        ], [
+            'username.required' => 'Debe especificar el nombre de usuario',
+            'username.unique' => 'El nombre de usuario ya está en uso',
+
+            'email.required' => 'Debe especificar el email',
+            'email.unique' => 'El email ya está en uso',
+
+            'password.required' => 'Debe especificar la contraseña',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
+
+            'repeatPassword.same' => 'Las contraseñas no coinciden',
+
+            'role_id.required' => 'Debe especificar el rol del usuario',
+            'role_id.exists' => 'El rol especificado no existe'
+        ]);
+
+        $data = (array)$request->all();
+        unset($data['repeatPassword']); //prevenir fallo de constraint de base de datos
+
+        //obtener rol para heredar sus permisos
+        $role = Role::with(['permissions'])->find($request->role_id);
+
+        $user = new User($data);
+        $user->save();
+
+        $data = [];
+        foreach($role->permissions as $permission) {
+            $data[] = [
+                'method_id' => $permission->method_id,
+                'module_id' => $permission->module_id,
+                'user_id' => $user->id,
+            ];
+        }
+
+        MethodModuleUser::insert($data);
+
+        return response()->json([
+            'message' => 'Usuario creado correctamente'
+        ], 201);
+
     }
 
     /**
