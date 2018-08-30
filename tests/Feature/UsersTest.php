@@ -250,6 +250,68 @@ class UsersTest extends TestCase
         ]);
     }
 
+
+    /**
+     * Usuarios pueden ser listados.
+     *
+     * @test
+     */
+    public function users_can_be_listed()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users',
+                'method' => 'GET'
+            ]
+        ]);
+
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/users/')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'users' => [
+                [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'role_id' => $role->id,
+                    'role' => [
+                        'id' => $role->id,
+                        'name' => $role->name,
+                        'description' => $role->description,
+                    ],
+                ]
+            ],
+            'pagination' => [
+                'total'        => 1,
+                'current_page' => 1,
+                'per_page'     => 10,
+                'last_page'    => 1,
+                'from'         => 1,
+                'to'           => 1
+            ]
+        ]);
+    }
+
+
+
+
     /**
      * Permisos de todos los usuarios pueden ser listados.
      * Este método estará presente en las pruebas necesarias.
