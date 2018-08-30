@@ -13,9 +13,7 @@ class MethodsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Module::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        Method::truncate();
 
         factory(Method::class)->create([
             'name' => 'GET',
