@@ -223,4 +223,25 @@ class UserController extends Controller
             'Usuario borrado correctamente'
         ]);
     }
+
+    public function password(Request $request, User $user)
+    {
+        $request->validate([
+            'password' => 'required|min:8',
+            'repeatPassword' => 'same:password',
+        ], [
+            'password.required' => 'Debe especificar la contraseña',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
+
+            'repeatPassword.same' => 'Las contraseñas no coinciden',
+        ]);
+
+        $user->update([
+            'password' => bcrypt($request->password)
+        ]);
+
+        return response()->json([
+            'message' => 'Contraseña cambiada correctamente'
+        ]);
+    }
 }

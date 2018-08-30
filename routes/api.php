@@ -49,6 +49,8 @@ Route::group([
 
         });
 
+        //Ruta para cambiar contraseña a los usuarios
+        Route::put('users/{user}/password', 'UserController@password');
 
         //Rutas generales de recursos
         Route::resources([

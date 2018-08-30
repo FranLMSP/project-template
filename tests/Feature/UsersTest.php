@@ -397,6 +397,43 @@ class UsersTest extends TestCase
     }
 
     /**
+     * Se pueden cambiar las contraseñas de los usuarios.
+     *
+     * @test
+     */
+    public function user_password_can_be_changed()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users/{user}/password',
+                'method' => 'PUT'
+            ]
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/users/'.$user->id.'/password', [
+            'password' => '12345678',
+            'repeatPassword' => '12345678'
+        ])
+        ->assertStatus(200);
+    }
+
+    /**
      * Permisos de todos los usuarios pueden ser listados.
      * Este método estará presente en las pruebas necesarias.
      *
