@@ -7,7 +7,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\User;
+use App\Role;
 use App\MethodModuleUser;
+use App\MethodModuleRole;
 use App\Module;
 use App\Method;
 

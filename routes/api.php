@@ -42,7 +42,8 @@ Route::group([
         ], function($router) {
 
             Route::resources([
-                'users' => 'UserPermissionController'
+                'users' => 'UserPermissionController',
+                'roles' => 'RolePermissionController',
             ]);
         });
 
