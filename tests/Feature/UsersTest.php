@@ -310,11 +310,11 @@ class UsersTest extends TestCase
     }
 
     /**
-     * Un usuarios pueden ser encontrado.
+     * Un usuario pueden ser encontrado.
      *
      * @test
      */
-    public function one_users_can_be_finded()
+    public function one_user_can_be_finded()
     {
         //Crear un rol para listarlo después
         $role = factory(Role::class)->create();
@@ -354,6 +354,45 @@ class UsersTest extends TestCase
                     'description' => $role->description,
                 ],
             ],
+        ]);
+    }
+
+    /**
+     * Un usuario pueden ser borrado.
+     *
+     * @test
+     */
+    public function one_user_can_be_deleted()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users/{user}',
+                'method' => 'DELETE'
+            ]
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->delete('/api/users/'.$user->id)
+        ->assertStatus(200);
+
+        //Se comprueba que se haya borrado el usuario correctamente
+        $this->assertDatabaseMissing('users', [
+            'id' => $user->id
         ]);
     }
 
