@@ -193,7 +193,6 @@ class PermissionsTest extends TestCase
      */
     public function users_permissions_can_be_listed()
     {
-        $this->withoutExceptionHandling();
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
@@ -257,6 +256,84 @@ class PermissionsTest extends TestCase
         ]);
     }
 
+    /**
+     * Permisos de todos los roles pueden ser listados.
+     *
+     * @test
+     */
+    public function roles_permissions_can_be_listed()
+    {
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'permissions/roles',
+                'method' => 'GET',
+            ]
+        ]);
+
+        //Se crea un rol con sus permisos
+        $role = factory(Role::class)->create();
+        factory(MethodModuleRole::class)->create([
+            'method_id' => factory(Method::class)->create()->id,
+            'module_id' => factory(Module::class)->create()->id,
+            'role_id' => $role->id
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/roles/')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'roles' => [
+                [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description,
+                    'permissions' => [
+                        [
+                            'id' =>  $role->permissions[0]->id,
+                            'method_id' => $role->permissions[0]->method->id,
+                            'module_id' => $role->permissions[0]->module->id,
+                            'user_id' => $role->id,
+                            'created_at' => (string)$role->permissions[0]->created_at,
+                            'updated_at' => (string)$role->permissions[0]->updated_at,
+                            'module' => [
+                                'id' => $role->permissions[0]->module->id,
+                                'name' => $role->permissions[0]->module->name,
+                                'description' => $role->permissions[0]->module->description,
+                                'url' => $role->permissions[0]->module->url,
+                                'api' => $role->permissions[0]->module->api,
+                                'active' => $role->permissions[0]->module->active,
+                            ],
+                            'method' => [
+                                'id' => $role->permissions[0]->method->id,
+                                'name' => $role->permissions[0]->method->name,
+                                'description' => $role->permissions[0]->method->description
+                            ],
+                        ]
+                    ]
+                ]
+            ],
+            'pagination' => [
+                'total'        => 1,
+                'current_page' => 1,
+                'per_page'     => 10,
+                'last_page'    => 1,
+                'from'         => 1,
+                'to'           => 1
+            ]
+        ]);
+    }
+
 
     /**
      * Permisos de un solo usuario puede ser listado.
@@ -265,7 +342,6 @@ class PermissionsTest extends TestCase
      */
     public function one_user_permissions_can_be_listed()
     {
-        $this->withoutExceptionHandling();
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
