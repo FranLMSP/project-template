@@ -57,6 +57,89 @@ class RolesTest extends TestCase
         ]);
     }
 
+    /**
+     * Datos necesarios para editar rol pueden ser cargados.
+     *
+     * @test
+     */
+    public function role_edit_data_can_be_listed()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'roles/{role}/edit',
+                'method' => 'GET'
+            ]
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/roles/'.$role->id.'/edit')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description
+            ],
+        ]);
+    }
+
+    /**
+     * Rol puede ser actualizado.
+     *
+     * @test
+     */
+    public function role_can_be_updated()
+    {
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'id' => 1,
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'roles/{role}',
+                'method' => 'PUT'
+            ]
+        ]);
+
+        $role = factory(Role::class)->create();
+
+        //Se prueba que se pueda crear.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/roles/'.$role->id, [
+            'name' => 'Admin',
+            'description' => 'Usuarios con privilegios de administrador',
+        ])
+        ->assertStatus(200);
+
+        //Verificar que el rol se haya modificado correctamente
+        $this->assertDatabaseHas('roles', [
+            'id' => $role->id,
+            'name' => 'Admin',
+            'description' => 'Usuarios con privilegios de administrador',
+        ]);
+    }
 
     /**
      * Permisos de todos los usuarios pueden ser listados.

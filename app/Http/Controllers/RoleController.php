@@ -70,7 +70,11 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        //
+        $role->makeHidden(['created_at', 'updated_at']);
+
+        return response()->json([
+            'role' => $role
+        ]);
     }
 
     /**
@@ -82,7 +86,19 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:roles,name,'.$role->id,
+            'description' => '',
+        ], [
+            'name.required' => 'Debe especificar el nombre del rol',
+            'name.unique' => 'Ya existe un rol con ese nombre',
+        ]);
+
+        $role->update($request->all());
+
+        return response()->json([
+            'role' => $role
+        ]);
     }
 
     /**
