@@ -125,7 +125,19 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $user->load([
+            'role' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description'
+                );
+            },
+        ])->makeHidden(['created_at', 'updated_at']);
+
+        return response()->json([
+            'user' => $user,
+        ]);
     }
 
     /**

@@ -309,8 +309,53 @@ class UsersTest extends TestCase
         ]);
     }
 
+    /**
+     * Un usuarios pueden ser encontrado.
+     *
+     * @test
+     */
+    public function one_users_can_be_finded()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users/{user}',
+                'method' => 'GET'
+            ]
+        ]);
 
 
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/users/'.$user->id)
+        ->assertStatus(200)
+        ->assertExactJson([
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role_id' => $role->id,
+                'role' => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description,
+                ],
+            ],
+        ]);
+    }
 
     /**
      * Permisos de todos los usuarios pueden ser listados.
