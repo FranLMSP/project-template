@@ -486,6 +486,8 @@ class PermissionsTest extends TestCase
             'url' => 'permissions/users/create',
             'module_id' => NULL,
         ]);
+        $moduleTwo = factory(Module::class)->create();
+
         factory(MethodModuleUser::class)->create([
             'method_id' => $method->id,
             'module_id' => $module->id,
@@ -493,8 +495,8 @@ class PermissionsTest extends TestCase
         ]);
 
         //Se crean otros dos módulos para probar que se pueden listar los hijos
-        $moduleTwo = factory(Module::class)->create([
-            'module_id' => factory(Module::class)->create()->id
+        $moduleThree = factory(Module::class)->create([
+            'module_id' => $moduleTwo->id
         ]);
 
         //Se prueba que se listen correctamente los datos.
@@ -516,25 +518,25 @@ class PermissionsTest extends TestCase
                     'childs' => []
                 ],
                 [
-                    'id' => $moduleTwo->id,
-                    'name' => $moduleTwo->name,
-                    'url' => $moduleTwo->url,
-                    'icon' => $moduleTwo->icon,
-                    'priority' => $moduleTwo->priority,
-                    'description' => $moduleTwo->description,
-                    'api' => $moduleTwo->api,
-                    'active' => $moduleTwo->active,
-                    'module_id' => $moduleTwo->module_id,
+                    'id' => $moduleThree->id,
+                    'name' => $moduleThree->name,
+                    'url' => $moduleThree->url,
+                    'icon' => $moduleThree->icon,
+                    'priority' => $moduleThree->priority,
+                    'description' => $moduleThree->description,
+                    'api' => $moduleThree->api,
+                    'active' => $moduleThree->active,
+                    'module_id' => $moduleThree->module_id,
                     'childs' => [
-                        'id' => $moduleTwo->childs[0]->id,
-                        'name' => $moduleTwo->childs[0]->name,
-                        'url' => $moduleTwo->childs[0]->url,
-                        'icon' => $moduleTwo->childs[0]->icon,
-                        'priority' => $moduleTwo->childs[0]->priority,
-                        'description' => $moduleTwo->childs[0]->description,
-                        'api' => $moduleTwo->childs[0]->api,
-                        'active' => $moduleTwo->childs[0]->active,
-                        'module_id' => $moduleTwo->childs[0]->module_id,
+                        'id' => $moduleTwo->id,
+                        'name' => $moduleTwo->name,
+                        'url' => $moduleTwo->url,
+                        'icon' => $moduleTwo->icon,
+                        'priority' => $moduleTwo->priority,
+                        'description' => $moduleTwo->description,
+                        'api' => $moduleTwo->api,
+                        'active' => $moduleTwo->active,
+                        'module_id' => $moduleTwo->module_id,
                         'childs' => []
                     ]
                 ]

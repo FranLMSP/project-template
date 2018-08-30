@@ -11,7 +11,7 @@ $factory->define(Module::class, function (Faker $faker) {
 
     //Se decide al azar si el módulo tendrá hijos o no
     //Y solo si existen módulos creados
-    if($faker->numberBetween(0,1) && Module::count() > 1) {
+    if($faker->numberBetween(0,1) && Module::count() >= 1) {
         //Se asigna un padre al azar
         $parent = Module::all()->random()->id;
     }

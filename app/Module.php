@@ -8,6 +8,8 @@ class Module extends Model
 {
     public $timestamps = false;
 
+    protected $with = ['childs'];
+
     protected $casts = [
         'module_id' => 'integer',
         'priority' => 'integer',
