@@ -119,7 +119,37 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $request->validate([
+            'username' => 'required|unique:users,username,'.$user->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'password' => 'required|min:8',
+            'repeatPassword' => 'same:password',
+            'role_id' => 'required|exists:roles,id'
+        ], [
+            'username.required' => 'Debe especificar el nombre de usuario',
+            'username.unique' => 'El nombre de usuario ya está en uso',
+
+            'email.required' => 'Debe especificar el email',
+            'email.unique' => 'El email ya está en uso',
+            'email.email' => 'El email no es válido',
+
+            'password.required' => 'Debe especificar la contraseña',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
+
+            'repeatPassword.same' => 'Las contraseñas no coinciden',
+
+            'role_id.required' => 'Debe especificar el rol del usuario',
+            'role_id.exists' => 'El rol especificado no existe'
+        ]);
+
+        $data = $request->all();
+        $data['password'] = bcrypt($data['password']);
+
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Usuario actualizado correctamente'
+        ]);
     }
 
     /**

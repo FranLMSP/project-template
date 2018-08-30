@@ -147,11 +147,11 @@ class UsersTest extends TestCase
     }
 
     /**
-     * Usuario puede ser creado.
+     * Usuario puede ser actualizado.
      *
      * @test
      */
-    public function user_can_be_created()
+    public function user_can_be_updated()
     {
         //Se crea un usuario
         $user = factory(User::class)->create([
