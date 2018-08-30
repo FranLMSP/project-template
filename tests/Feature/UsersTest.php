@@ -147,6 +147,62 @@ class UsersTest extends TestCase
     }
 
     /**
+     * Datos necesarios para editar usuarios pueden ser cargados.
+     *
+     * @test
+     */
+    public function user_edit_data_can_be_listed()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users/{user}/edit',
+                'method' => 'GET'
+            ]
+        ]);
+
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/users/'.$user->id.'/edit')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'roles' => [
+                [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description
+                ]
+            ],
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role_id' => $user->role->id,
+                'role' => [
+                    'id' => $user->role->id,
+                    'name' => $user->role->name,
+                    'description' => $user->role->description,
+                ],
+            ]
+        ]);
+    }
+
+
+    /**
      * Usuario puede ser actualizado.
      *
      * @test

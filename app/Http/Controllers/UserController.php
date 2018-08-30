@@ -107,7 +107,23 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $user->load([
+            'role' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description'
+                );
+            },
+        ])->makeHidden(['created_at', 'updated_at']);
+
+        $roles = Role::select('id', 'name', 'description')
+            ->get();
+
+        return response()->json([
+            'user' => $user,
+            'roles' => $roles
+        ]);
     }
 
     /**
