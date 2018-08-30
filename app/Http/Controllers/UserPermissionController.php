@@ -79,7 +79,23 @@ class UserPermissionController extends Controller
      */
     public function show(User $user)
     {
+        $user->load([
+            'permissions.module' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description',
+                    'api',
+                    'active',
+                    'url'
+                );
+            },
+            'permissions.method',
+        ])->makeHidden(['created_at', 'updated_at']);
 
+        return response()->json([
+            'user' => $user
+        ]);
     }
 
     /**
