@@ -44,7 +44,7 @@ class UserController extends Controller
     {
         $request->validate([
             'username' => 'required|unique:users',
-            'email' => 'required|unique:users',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
             'repeatPassword' => 'same:password',
             'role_id' => 'required|exists:roles,id'
@@ -54,6 +54,7 @@ class UserController extends Controller
 
             'email.required' => 'Debe especificar el email',
             'email.unique' => 'El email ya está en uso',
+            'email.email' => 'El email no es válido',
 
             'password.required' => 'Debe especificar la contraseña',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
@@ -64,13 +65,10 @@ class UserController extends Controller
             'role_id.exists' => 'El rol especificado no existe'
         ]);
 
-        $data = (array)$request->all();
-        unset($data['repeatPassword']); //prevenir fallo de constraint de base de datos
-
         //obtener rol para heredar sus permisos
         $role = Role::with(['permissions'])->find($request->role_id);
 
-        $user = new User($data);
+        $user = new User($request->all());
         $user->save();
 
         $data = [];

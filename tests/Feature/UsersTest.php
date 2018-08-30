@@ -30,10 +30,14 @@ class UsersTest extends TestCase
      */
     public function user_create_data_can_be_listed()
     {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
-            'password' => bcrypt('123456')
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
         ]);
         //Obtenemos su token para la sesion
         $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
@@ -47,8 +51,6 @@ class UsersTest extends TestCase
             ]
         ]);
 
-        //Crear un rol para listarlo después
-        $role = factory(Role::class)->create();
 
         //Se prueba que se listen correctamente los datos.
         $this->withHeaders(["Authorization" => 'Bearer '.$token])
@@ -122,15 +124,25 @@ class UsersTest extends TestCase
         ])
         ->assertStatus(201);
 
+        $newUser = User::where('email', 'a@a.com')->first();
+
+        //Verificar que el usuario creado haya heredado los permisos
         $this->assertDatabaseHas('method_module_user', [
             'method_id' => $method->id,
             'module_id' => $module->id,
-            'user_id' => 2,
+            'user_id' => $newUser->id,
         ]);
         $this->assertDatabaseHas('method_module_user', [
             'method_id' => $methodTwo->id,
             'module_id' => $moduleTwo->id,
-            'user_id' => 2,
+            'user_id' => $newUser->id,
+        ]);
+
+        //Verificar que el usuario se haya creado correctamente
+        $this->assertDatabaseHas('users', [
+            'username' => 'usuario',
+            'email' => 'a@a.com',
+            'role_id' => $role->id,
         ]);
     }
 
