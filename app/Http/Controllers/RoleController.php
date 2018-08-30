@@ -59,7 +59,11 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        //
+        $role->makeHidden(['created_at', 'updated_at']);
+
+        return response()->json([
+            'role' => $role
+        ]);
     }
 
     /**
