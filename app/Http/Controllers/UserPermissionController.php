@@ -15,7 +15,39 @@ class UserPermissionController extends Controller
      */
     public function index()
     {
-        //
+        $result = User::select(
+            'id',
+            'username',
+            'email'
+        )->with([
+            'permissions.module' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description',
+                    'api',
+                    'active',
+                    'url'
+                );
+            },
+            'permissions.method',
+        ])->paginate(10);
+
+        $users = $result->items();
+
+        $pagination = [
+            'total'        => $result->total(),
+            'current_page' => $result->currentPage(),
+            'per_page'     => $result->perPage(),
+            'last_page'    => $result->lastPage(),
+            'from'         => $result->firstItem(),
+            'to'           => $result->lastItem()
+        ];
+
+        return response()->json([
+            'users' => $users,
+            'pagination' => $pagination
+        ]);
     }
 
     /**

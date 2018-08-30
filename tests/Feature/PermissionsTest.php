@@ -29,7 +29,6 @@ class PermissionsTest extends TestCase
      */
     public function permissions_can_be_assigned_to_user()
     {
-        $this->withoutExceptionHandling();
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
@@ -112,7 +111,6 @@ class PermissionsTest extends TestCase
      */
     public function permissions_can_be_assigned_to_role()
     {
-        $this->withoutExceptionHandling();
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
@@ -225,6 +223,12 @@ class PermissionsTest extends TestCase
                     'email' => $user->email,
                     'permissions' => [
                         [
+                            'id' =>  $user->permissions[0]->id,
+                            'method_id' => $user->permissions[0]->method->id,
+                            'module_id' => $user->permissions[0]->module->id,
+                            'user_id' => $user->id,
+                            'created_at' => (string)$user->permissions[0]->created_at,
+                            'updated_at' => (string)$user->permissions[0]->updated_at,
                             'module' => [
                                 'id' => $user->permissions[0]->module->id,
                                 'name' => $user->permissions[0]->module->name,
@@ -241,6 +245,14 @@ class PermissionsTest extends TestCase
                         ]
                     ]
                 ]
+            ],
+            'pagination' => [
+                'total'        => 1,
+                'current_page' => 1,
+                'per_page'     => 10,
+                'last_page'    => 1,
+                'from'         => 1,
+                'to'           => 1
             ]
         ]);
     }
