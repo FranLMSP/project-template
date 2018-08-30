@@ -37,6 +37,7 @@ Route::group([
         'middleware' => CheckPermission::class
     ], function ($router) {
 
+        //Rutas de permisos
         Route::group([
             'prefix' => 'permissions'
         ], function($router) {
@@ -45,7 +46,16 @@ Route::group([
                 'users' => 'UserPermissionController',
                 'roles' => 'RolePermissionController',
             ]);
+
         });
+
+        //Ruta para cambiar contraseña a los usuarios
+        Route::put('users/{user}/password', 'UserController@password');
+
+        //Rutas generales de recursos
+        Route::resources([
+            'users' => 'UserController',
+        ]);
 
     });
 

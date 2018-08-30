@@ -20,7 +20,8 @@ class UserPermissionController extends Controller
         $result = User::select(
             'id',
             'username',
-            'email'
+            'email',
+            'role_id'
         )->with([
             'permissions.module' => function($query) {
                 $query->select(
@@ -30,6 +31,13 @@ class UserPermissionController extends Controller
                     'api',
                     'active',
                     'url'
+                );
+            },
+            'role' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description'
                 );
             },
             'permissions.method',
@@ -98,6 +106,13 @@ class UserPermissionController extends Controller
                     'url'
                 );
             },
+            'role' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description'
+                );
+            },
             'permissions.method',
         ])->makeHidden(['created_at', 'updated_at']);
 
@@ -126,6 +141,13 @@ class UserPermissionController extends Controller
                     'api',
                     'active',
                     'url'
+                );
+            },
+            'role' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description'
                 );
             },
             'permissions.method',
