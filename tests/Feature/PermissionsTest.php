@@ -186,4 +186,88 @@ class PermissionsTest extends TestCase
         //Solo deberían haber dos registros porque se borraron los anteriores
         $this->assertTrue(MethodModuleRole::count() == 2);
     }
+
+
+    /**
+     * Permisos de todos los usuarios pueden ser listados.
+     *
+     * @test
+     */
+    public function users_permissions_can_be_listed()
+    {
+        $this->withoutExceptionHandling();
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'permissions/users',
+                'method' => 'GET',
+            ]
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/users/')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'users' => [
+                [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'permissions' => [
+                        [
+                            'module' => [
+                                'id' => $user->permissions[0]->module->id,
+                                'name' => $user->permissions[0]->module->name,
+                                'description' => $user->permissions[0]->module->description,
+                                'url' => $user->permissions[0]->module->url,
+                                'api' => $user->permissions[0]->module->api,
+                                'active' => $user->permissions[0]->module->active,
+                            ],
+                            'method' => [
+                                'id' => $user->permissions[0]->method->id,
+                                'name' => $user->permissions[0]->method->name,
+                                'description' => $user->permissions[0]->method->description
+                            ],
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+
+    /**
+    * Permisos de todos los usuarios pueden ser listados.
+    * Este método estará presente en las pruebas necesarias.
+    *
+    * @param array $permissions Arreglo con los permisos a asignar para el usuario
+    *   Con un subarray que contiene la ID del usuario, la URL y el metodo HTTP
+    *   Ejemplo: [['user_id' => 1, 'url' => 'ruta/{id}', 'method' => 'GET']]
+    *
+    * @return void
+    */
+    private function assignPermissions(array $permissions) {
+        foreach($permissions as $permission) {
+            factory(MethodModuleUser::class)->create([
+                'user_id' => $permission['user_id'],
+                'module_id' => factory(Module::class)->create([
+                    'url' => $permission['url']
+                ])->id,
+                'method_id' => factory(Method::class)->create([
+                    'name' => $permission['method']
+                ])->id
+            ]);
+        }
+    }
+
 }
