@@ -183,6 +183,57 @@ class RolesTest extends TestCase
     }
 
     /**
+     * Roles pueden ser listados.
+     *
+     * @test
+     */
+    public function roles_can_be_listed()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'roles',
+                'method' => 'GET'
+            ]
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/roles/')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'roles' => [
+                [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description
+                ]
+            ],
+            'pagination' => [
+                'total'        => 1,
+                'current_page' => 1,
+                'per_page'     => 10,
+                'last_page'    => 1,
+                'from'         => 1,
+                'to'           => 1
+            ]
+        ]);
+    }
+
+    /**
      * Un rol puede ser borrado.
      *
      * @test
