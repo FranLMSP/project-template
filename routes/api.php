@@ -55,6 +55,7 @@ Route::group([
         //Rutas generales de recursos
         Route::resources([
             'users' => 'UserController',
+            'roles' => 'RoleController',
         ]);
 
     });

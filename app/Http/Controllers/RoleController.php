@@ -35,7 +35,20 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:roles',
+            'description' => '',
+        ], [
+            'name.required' => 'Debe especificar el nombre del rol',
+            'name.unique' => 'Ya existe un rol con ese nombre',
+        ]);
+
+        $role = new Role($request->all());
+        $role->save();
+
+        return response()->json([
+            'message' => 'Rol creado correctamente'
+        ], 201);
     }
 
     /**
