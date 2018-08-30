@@ -235,6 +235,7 @@ class PermissionsTest extends TestCase
                                 'url' => $user->permissions[0]->module->url,
                                 'api' => $user->permissions[0]->module->api,
                                 'active' => $user->permissions[0]->module->active,
+                                'childs' => []
                             ],
                             'method' => [
                                 'id' => $user->permissions[0]->method->id,
@@ -313,6 +314,7 @@ class PermissionsTest extends TestCase
                                 'url' => $role->permissions[0]->module->url,
                                 'api' => $role->permissions[0]->module->api,
                                 'active' => $role->permissions[0]->module->active,
+                                'childs' => []
                             ],
                             'method' => [
                                 'id' => $role->permissions[0]->method->id,
@@ -383,6 +385,7 @@ class PermissionsTest extends TestCase
                             'url' => $user->permissions[0]->module->url,
                             'api' => $user->permissions[0]->module->api,
                             'active' => $user->permissions[0]->module->active,
+                            'childs' => []
                         ],
                         'method' => [
                             'id' => $user->permissions[0]->method->id,
@@ -451,6 +454,7 @@ class PermissionsTest extends TestCase
                             'url' => $role->permissions[0]->module->url,
                             'api' => $role->permissions[0]->module->api,
                             'active' => $role->permissions[0]->module->active,
+                            'childs' => []
                         ],
                         'method' => [
                             'id' => $role->permissions[0]->method->id,
@@ -470,6 +474,7 @@ class PermissionsTest extends TestCase
     */
     public function user_permission_create_data_can_be_listed()
     {
+        $this->withoutExceptionHandling();
         //Se crea un usuario
         $user = factory(User::class)->create([
             'username' => 'admin',
@@ -486,7 +491,7 @@ class PermissionsTest extends TestCase
             'url' => 'permissions/users/create',
             'module_id' => NULL,
         ]);
-        $moduleTwo = factory(Module::class)->create();
+        $moduleTwo = factory(Module::class)->create(['module_id' => NULL]);
 
         factory(MethodModuleUser::class)->create([
             'method_id' => $method->id,
@@ -518,26 +523,28 @@ class PermissionsTest extends TestCase
                     'childs' => []
                 ],
                 [
-                    'id' => $moduleThree->id,
-                    'name' => $moduleThree->name,
-                    'url' => $moduleThree->url,
-                    'icon' => $moduleThree->icon,
-                    'priority' => $moduleThree->priority,
-                    'description' => $moduleThree->description,
-                    'api' => $moduleThree->api,
-                    'active' => $moduleThree->active,
-                    'module_id' => $moduleThree->module_id,
+                    'id' => $moduleTwo->id,
+                    'name' => $moduleTwo->name,
+                    'url' => $moduleTwo->url,
+                    'icon' => $moduleTwo->icon,
+                    'priority' => $moduleTwo->priority,
+                    'description' => $moduleTwo->description,
+                    'api' => $moduleTwo->api,
+                    'active' => $moduleTwo->active,
+                    'module_id' => $moduleTwo->module_id,
                     'childs' => [
-                        'id' => $moduleTwo->id,
-                        'name' => $moduleTwo->name,
-                        'url' => $moduleTwo->url,
-                        'icon' => $moduleTwo->icon,
-                        'priority' => $moduleTwo->priority,
-                        'description' => $moduleTwo->description,
-                        'api' => $moduleTwo->api,
-                        'active' => $moduleTwo->active,
-                        'module_id' => $moduleTwo->module_id,
-                        'childs' => []
+                        [
+                            'id' => $moduleThree->id,
+                            'name' => $moduleThree->name,
+                            'url' => $moduleThree->url,
+                            'icon' => $moduleThree->icon,
+                            'priority' => $moduleThree->priority,
+                            'description' => $moduleThree->description,
+                            'api' => $moduleThree->api,
+                            'active' => $moduleThree->active,
+                            'module_id' => $moduleThree->module_id,
+                            'childs' => []
+                        ]
                     ]
                 ]
             ],

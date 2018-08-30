@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Module;
+use App\Method;
 use App\MethodModuleUser;
 
 class UserPermissionController extends Controller
@@ -57,7 +59,13 @@ class UserPermissionController extends Controller
      */
     public function create()
     {
-        //
+        $modules = Module::where('module_id', NULL)->get();
+        $methods = Method::get();
+
+        return response()->json([
+            'modules' => $modules,
+            'methods' => $methods
+        ]);
     }
 
     /**
