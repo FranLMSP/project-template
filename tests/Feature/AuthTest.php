@@ -10,20 +10,20 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 
 /**
-* Este test se va a encargar de probar si un usuario
-* puede iniciar o cerrar sesión por medio de la API
-* con sus respectivos JsonWebToken.
-*
-*/
+ * Este test se va a encargar de probar si un usuario
+ * puede iniciar o cerrar sesión por medio de la API
+ * con sus respectivos JsonWebToken.
+ *
+ */
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
-    * Un usuario puede iniciar sesión con credenciales válidas.
-    *
-    * @test
-    */
+     * Un usuario puede iniciar sesión con credenciales válidas.
+     *
+     * @test
+     */
     public function a_user_can_login_with_valid_credentials()
     {
         //Crear un usuario
@@ -47,10 +47,10 @@ class AuthTest extends TestCase
     }
 
     /** 
-    * Un usuario NO puede iniciar sesión con credenciales NO válidas.
-    *
-    * @test
-    */
+     * Un usuario NO puede iniciar sesión con credenciales NO válidas.
+     *
+     * @test
+     */
     public function a_user_can_not_login_with_invalid_credentials()
     {
         //Se crea un usuario
@@ -67,10 +67,10 @@ class AuthTest extends TestCase
     }
 
     /**
-    * Un usuario puede cerrar sesión
-    *
-    * @test
-    */
+     * Un usuario puede cerrar sesión
+     *
+     * @test
+     */
     public function a_user_can_logout()
     {
         //Se crea un usuario
