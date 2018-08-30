@@ -15,7 +15,39 @@ class RolePermissionController extends Controller
      */
     public function index()
     {
-        //
+        $result = Role::select(
+            'id',
+            'name',
+            'description'
+        )->with([
+            'permissions.module' => function($query) {
+                $query->select(
+                    'id',
+                    'name',
+                    'description',
+                    'api',
+                    'active',
+                    'url'
+                );
+            },
+            'permissions.method',
+        ])->paginate(10);
+
+        $roles = $result->items();
+
+        $pagination = [
+            'total'        => $result->total(),
+            'current_page' => $result->currentPage(),
+            'per_page'     => $result->perPage(),
+            'last_page'    => $result->lastPage(),
+            'from'         => $result->firstItem(),
+            'to'           => $result->lastItem()
+        ];
+
+        return response()->json([
+            'roles' => $roles,
+            'pagination' => $pagination
+        ]);
     }
 
     /**

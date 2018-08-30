@@ -303,7 +303,7 @@ class PermissionsTest extends TestCase
                             'id' =>  $role->permissions[0]->id,
                             'method_id' => $role->permissions[0]->method->id,
                             'module_id' => $role->permissions[0]->module->id,
-                            'user_id' => $role->id,
+                            'role_id' => $role->id,
                             'created_at' => (string)$role->permissions[0]->created_at,
                             'updated_at' => (string)$role->permissions[0]->updated_at,
                             'module' => [
