@@ -259,6 +259,68 @@ class PermissionsTest extends TestCase
 
 
     /**
+     * Permisos de un solo usuario puede ser listado.
+     *
+     * @test
+     */
+    public function one_user_permissions_can_be_listed()
+    {
+        $this->withoutExceptionHandling();
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'permissions/users/{user}',
+                'method' => 'GET',
+            ]
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/users/'.$user->id)
+        ->assertStatus(200)
+        ->assertExactJson([
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'permissions' => [
+                    [
+                        'id' =>  $user->permissions[0]->id,
+                        'method_id' => $user->permissions[0]->method->id,
+                        'module_id' => $user->permissions[0]->module->id,
+                        'user_id' => $user->id,
+                        'created_at' => (string)$user->permissions[0]->created_at,
+                        'updated_at' => (string)$user->permissions[0]->updated_at,
+                        'module' => [
+                            'id' => $user->permissions[0]->module->id,
+                            'name' => $user->permissions[0]->module->name,
+                            'description' => $user->permissions[0]->module->description,
+                            'url' => $user->permissions[0]->module->url,
+                            'api' => $user->permissions[0]->module->api,
+                            'active' => $user->permissions[0]->module->active,
+                        ],
+                        'method' => [
+                            'id' => $user->permissions[0]->method->id,
+                            'name' => $user->permissions[0]->method->name,
+                            'description' => $user->permissions[0]->method->description
+                        ],
+                    ]
+                ]
+            ],
+        ]);
+    }
+
+
+    /**
     * Permisos de todos los usuarios pueden ser listados.
     * Este método estará presente en las pruebas necesarias.
     *
