@@ -183,6 +183,44 @@ class RolesTest extends TestCase
     }
 
     /**
+     * Un rol puede ser borrado.
+     *
+     * @test
+     */
+    public function role_can_be_deleted()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'roles/{role}',
+                'method' => 'DELETE'
+            ]
+        ]);
+
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->delete('/api/roles/'.$role->id)
+        ->assertStatus(200);
+
+        //Confirmar que esté borrado
+        $this->assertDatabaseMissing('roles', [
+            'id' => $role->id
+        ]);
+    }
+
+    /**
      * Permisos de todos los usuarios pueden ser listados.
      * Este método estará presente en las pruebas necesarias.
      *

@@ -113,6 +113,10 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        $role->delete();
+
+        return response()->json([
+            'message' => 'Rol borrado correctamente'
+        ]);
     }
 }
