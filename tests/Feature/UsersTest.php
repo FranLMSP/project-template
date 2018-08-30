@@ -147,6 +147,54 @@ class UsersTest extends TestCase
     }
 
     /**
+     * Usuario puede ser creado.
+     *
+     * @test
+     */
+    public function user_can_be_created()
+    {
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'id' => 1,
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users/{user}',
+                'method' => 'PUT'
+            ]
+        ]);
+
+        //Crear un rol para asignárselo al usuario a crear
+        $newRole = factory(Role::class)->create();
+
+        //Se prueba que se pueda crear.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/users/'.$user->id, [
+            'username' => 'usuario',
+            'email' => 'a@a.com',
+            'password' => '12345678',
+            'repeatPassword' => '12345678',
+            'role_id' => $newRole->id,
+        ])
+        ->assertStatus(200);
+
+        //Verificar que el usuario se haya creado correctamente
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'username' => 'usuario',
+            'email' => 'a@a.com',
+            'role_id' => $newRole->id,
+        ]);
+    }
+
+    /**
      * Permisos de todos los usuarios pueden ser listados.
      * Este método estará presente en las pruebas necesarias.
      *
