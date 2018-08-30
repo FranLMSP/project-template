@@ -23,10 +23,10 @@ class PermissionsTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Permisos pueden ser asignados a un usuario.
-     *
-     * @test
-     */
+    * Permisos pueden ser asignados a un usuario.
+    *
+    * @test
+    */
     public function permissions_can_be_assigned_to_user()
     {
         //Se crea un usuario
@@ -105,10 +105,10 @@ class PermissionsTest extends TestCase
     }
 
     /**
-     * Permisos pueden ser asignados a un rol.
-     *
-     * @test
-     */
+    * Permisos pueden ser asignados a un rol.
+    *
+    * @test
+    */
     public function permissions_can_be_assigned_to_role()
     {
         //Se crea un usuario
@@ -187,10 +187,10 @@ class PermissionsTest extends TestCase
 
 
     /**
-     * Permisos de todos los usuarios pueden ser listados.
-     *
-     * @test
-     */
+    * Permisos de todos los usuarios pueden ser listados.
+    *
+    * @test
+    */
     public function users_permissions_can_be_listed()
     {
         //Se crea un usuario
@@ -257,10 +257,10 @@ class PermissionsTest extends TestCase
     }
 
     /**
-     * Permisos de todos los roles pueden ser listados.
-     *
-     * @test
-     */
+    * Permisos de todos los roles pueden ser listados.
+    *
+    * @test
+    */
     public function roles_permissions_can_be_listed()
     {
         //Se crea un usuario
@@ -336,10 +336,10 @@ class PermissionsTest extends TestCase
 
 
     /**
-     * Permisos de un solo usuario puede ser listado.
-     *
-     * @test
-     */
+    * Permisos de un solo usuario puede ser listado.
+    *
+    * @test
+    */
     public function one_user_permissions_can_be_listed()
     {
         //Se crea un usuario
@@ -396,10 +396,10 @@ class PermissionsTest extends TestCase
     }
 
     /**
-     * Permisos de un solo rol puede ser listado.
-     *
-     * @test
-     */
+    * Permisos de un solo rol puede ser listado.
+    *
+    * @test
+    */
     public function one_role_permissions_can_be_listed()
     {
         //Se crea un usuario
@@ -463,6 +463,91 @@ class PermissionsTest extends TestCase
         ]);
     }
 
+    /**
+    * Permisos de un solo rol puede ser listado.
+    *
+    * @test
+    */
+    public function user_permission_create_data_can_be_listed()
+    {
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $method = factory(Method::class)->create([
+            'name' => 'GET'
+        ]);
+        $module = factory(Module::class)->create([
+            'url' => 'permissions/users/create',
+            'module_id' => NULL,
+        ]);
+        factory(MethodModuleUser::class)->create([
+            'method_id' => $method->id,
+            'module_id' => $module->id,
+            'user_id' => $user->id
+        ]);
+
+        //Se crean otros dos módulos para probar que se pueden listar los hijos
+        $moduleTwo = factory(Module::class)->create([
+            'module_id' => factory(Module::class)->create()->id
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->get('/api/permissions/users/create')
+        ->assertStatus(200)
+        ->assertExactJson([
+            'modules' => [
+                [
+                    'id' => $module->id,
+                    'name' => $module->name,
+                    'url' => $module->url,
+                    'icon' => $module->icon,
+                    'priority' => $module->priority,
+                    'description' => $module->description,
+                    'api' => $module->api,
+                    'active' => $module->active,
+                    'module_id' => $module->module_id,
+                    'childs' => []
+                ],
+                [
+                    'id' => $moduleTwo->id,
+                    'name' => $moduleTwo->name,
+                    'url' => $moduleTwo->url,
+                    'icon' => $moduleTwo->icon,
+                    'priority' => $moduleTwo->priority,
+                    'description' => $moduleTwo->description,
+                    'api' => $moduleTwo->api,
+                    'active' => $moduleTwo->active,
+                    'module_id' => $moduleTwo->module_id,
+                    'childs' => [
+                        'id' => $moduleTwo->childs[0]->id,
+                        'name' => $moduleTwo->childs[0]->name,
+                        'url' => $moduleTwo->childs[0]->url,
+                        'icon' => $moduleTwo->childs[0]->icon,
+                        'priority' => $moduleTwo->childs[0]->priority,
+                        'description' => $moduleTwo->childs[0]->description,
+                        'api' => $moduleTwo->childs[0]->api,
+                        'active' => $moduleTwo->childs[0]->active,
+                        'module_id' => $moduleTwo->childs[0]->module_id,
+                        'childs' => []
+                    ]
+                ]
+            ],
+            'methods' => [
+                [
+                    'id' => $method->id,
+                    'name' => $method->name,
+                    'description' => $method->description
+                ]
+            ]
+        ]);
+    }
 
     /**
     * Permisos de todos los usuarios pueden ser listados.
