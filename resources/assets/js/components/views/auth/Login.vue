@@ -40,7 +40,7 @@
 
                         <b-form-row>
                             <b-col>
-                                <b-button block size="lg" :disabled="loading" variant="primary">Iniciar sesión</b-button>
+                                <b-button type="submit" block size="lg" :disabled="loading" variant="primary">Iniciar sesión</b-button>
                             </b-col>
                         </b-form-row>
                     </b-form>
