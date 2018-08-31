@@ -1,13 +1,12 @@
 <template>
-
+    <b-row>
+    </b-row>
 </template>
 
 <script type="text/javascript">
     import {login} from '../../../helpers/auth.js'
 
     export default {
-        components: {
-        },
         data() {
             return {
                 form: {

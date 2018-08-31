@@ -1,9 +1,9 @@
 // Variables
 @import 'variables';
 
-// MDBootstrap
-@import "~bootstrap/scss/bootstrap.scss";
-@import "~mdbvue/build/scss/mdb.scss";
+// Bootstrap
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/dist/bootstrap-vue.css';
 
 // Pace
-@import "~pace-js/themes/blue/pace-theme-flash.css"
+@import "~pace-js/themes/blue/pace-theme-flash.css";
