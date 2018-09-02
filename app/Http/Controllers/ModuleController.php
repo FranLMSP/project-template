@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Module;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+
 class ModuleController extends Controller
 {
     /**
@@ -15,6 +17,24 @@ class ModuleController extends Controller
     public function index()
     {
         //
+    }
+
+    public function menu()
+    {
+        $modules = Module::where('active', true)
+            ->where('api', false)
+            ->whereHas('childs', function($query) {
+                $query->where('api', false);
+            })
+            ->whereHas('userPermissions', function($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->orderBy('priority', 'DESC')
+            ->get();
+
+        return response()->json([
+            'modules' => $modules
+        ]);
     }
 
     /**

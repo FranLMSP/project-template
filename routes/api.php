@@ -32,6 +32,9 @@ Route::group([
     'middleware' => 'jwt.auth',
 ], function ($router) {
 
+    //Obtener mis módulos
+    Route::get('modules/menu', 'ModuleController@menu');
+
     //Todas las rutas que van a estar protegidas por permisos
     Route::group([
         'middleware' => CheckPermission::class

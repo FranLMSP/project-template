@@ -33,4 +33,9 @@ class Module extends Model
         return $this->hasMany(Module::class)
             ->orderBy('priority', 'DESC');
     }
+
+    public function userPermissions()
+    {
+        return $this->hasMany(MethodModuleUser::class);
+    }
 }
