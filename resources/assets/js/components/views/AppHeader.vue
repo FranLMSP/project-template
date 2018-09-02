@@ -48,8 +48,8 @@
             <router-link to="/dashboard" @click.native="activeItem = 1">
               <b-list-group-item :action="true" :class="activeItem === 1 && 'active'">Dashboard</b-list-group-item>
             </router-link>
-            <router-link to="/profile" @click.native="activeItem = 2">
-              <b-list-group-item :action="true" :class="activeItem === 2 && 'active'">Profile</b-list-group-item>
+            <router-link to="/usuarios" @click.native="activeItem = 2">
+              <b-list-group-item :action="true" :class="activeItem === 2 && 'active'">Usuarios</b-list-group-item>
             </router-link>
             <router-link to="/tables"  @click.native="activeItem = 3">
               <b-list-group-item :action="true" :class="activeItem === 3 && 'active'">Tables</b-list-group-item>

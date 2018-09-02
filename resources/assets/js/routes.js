@@ -2,6 +2,8 @@ import Template from './components/views/Template.vue'
 
 import Login from './components/views/auth/Login.vue'
 
+import UsersRoutes from './routes/users'
+
 export const routes = [
     {
         path: '/login',
@@ -14,5 +16,8 @@ export const routes = [
             requiresAuth: true,
             title: 'Inicio'
         },
+        children: [
+            UsersRoutes
+        ]
     }
 ]
