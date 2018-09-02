@@ -37,20 +37,25 @@ class ModulesTest extends TestCase
 
         //Módulos para listar
         $moduleOne = factory(Module::class)->create([
+            'name' => 'Primer módulo padre',
             'api' => false //listar
         ]);
         $moduleOneChild = factory(Module::class)->create([
+            'name' => 'Primer módulo hijo',
             'api' => false, //listar,
             'module_id' => $moduleOne->id,
         ]);
         $moduleTwo = factory(Module::class)->create([
-            'api' => false //no listar
+            'api' => false, //no listar
+            'module_id' => NULL,
         ]);
         //Módulos de otro usuario que NO se va a listar
         $moduleThree = factory(Module::class)->create([
+            'module_id' => NULL,
             'api' => true //no listar
         ]);
         $moduleFour = factory(Module::class)->create([
+            'module_id' => NULL,
             'api' => true //no listar
         ]);
 
@@ -99,25 +104,29 @@ class ModulesTest extends TestCase
         ->assertStatus(200)
         ->assertExactJson([
             'modules' => [
-                'name' => $moduleOne->name,
-                'url' => $moduleOne->url,
-                'icon' => $moduleOne->icon,
-                'priority' => $moduleOne->priority,
-                'description' => $moduleOne->description,
-                'api' => $moduleOne->api,
-                'active' => $moduleOne->active,
-                'module_id' => $moduleOne->module_id,
-                'childs' => [
-                    [
-                        'name' => $moduleOneChild->name,
-                        'url' => $moduleOneChild->url,
-                        'icon' => $moduleOneChild->icon,
-                        'priority' => $moduleOneChild->priority,
-                        'description' => $moduleOneChild->description,
-                        'api' => $moduleOneChild->api,
-                        'active' => $moduleOneChild->active,
-                        'module_id' => $moduleOneChild->module_id,
-                        'childs' => []
+                [
+                    'id' => $moduleOne->id,
+                    'name' => $moduleOne->name,
+                    'url' => $moduleOne->url,
+                    'icon' => $moduleOne->icon,
+                    'priority' => $moduleOne->priority,
+                    'description' => $moduleOne->description,
+                    'api' => $moduleOne->api,
+                    'active' => $moduleOne->active,
+                    'module_id' => $moduleOne->module_id,
+                    'childs' => [
+                        [
+                            'id' => $moduleOneChild->id,
+                            'name' => $moduleOneChild->name,
+                            'url' => $moduleOneChild->url,
+                            'icon' => $moduleOneChild->icon,
+                            'priority' => $moduleOneChild->priority,
+                            'description' => $moduleOneChild->description,
+                            'api' => $moduleOneChild->api,
+                            'active' => $moduleOneChild->active,
+                            'module_id' => $moduleOneChild->module_id,
+                            'childs' => []
+                        ]
                     ]
                 ]
             ],
