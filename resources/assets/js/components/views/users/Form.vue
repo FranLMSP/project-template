@@ -15,7 +15,22 @@
                                   <fa :icon="icons.user"/>
                                 </b-input-group-prepend>
 
-                                <b-form-input v-model="form.username" type="text" placeholder="Nombre de usuario"></b-form-input>
+                                <input 
+                                    :class="
+                                        validated ?
+                                        {
+                                            'is-valid': isValid('username'),
+                                            'is-invalid': !isValid('username')
+                                        } : {}"
+                                    class="form-control"
+                                    v-model="form.username"
+                                    type="text"
+                                    placeholder="Nombre de usuario"
+                                />
+
+                                <div class="invalid-feedback" v-if="formErrors.username">
+                                    {{ formErrors.username[0] }}
+                                </div>
 
                             </b-input-group>
                         </b-col>
@@ -25,7 +40,22 @@
                                   <fa :icon="icons.at"/>
                                 </b-input-group-prepend>
 
-                                <b-form-input v-model="form.email" type="email" placeholder="Email"></b-form-input>
+                                <input 
+                                    :class="
+                                        validated ?
+                                        {
+                                            'is-valid': isValid('email'),
+                                            'is-invalid': !isValid('email')
+                                        } : {}"
+                                    class="form-control"
+                                    v-model="form.email"
+                                    type="email"
+                                    placeholder="Email"
+                                />
+
+                                <div class="invalid-feedback" v-if="formErrors.email">
+                                    {{ formErrors.email[0] }}
+                                </div>
 
                             </b-input-group>
                         </b-col>
@@ -38,8 +68,22 @@
                                   <fa :icon="icons.lock"/>
                                 </b-input-group-prepend>
 
-                                <b-form-input v-model="form.password" type="password" placeholder="Contraseña"></b-form-input>
+                                <input 
+                                    :class="
+                                        validated ?
+                                        {
+                                            'is-valid': isValid('password'),
+                                            'is-invalid': !isValid('password')
+                                        } : {}"
+                                    class="form-control"
+                                    v-model="form.password"
+                                    type="password"
+                                    placeholder="Contraseña"
+                                />
 
+                                <div class="invalid-feedback" v-if="formErrors.password">
+                                    {{ formErrors.password[0] }}
+                                </div>
                             </b-input-group>
                         </b-col>
                     </b-form-row>
@@ -51,14 +95,32 @@
                                   <fa :icon="icons.lock"/>
                                 </b-input-group-prepend>
 
-                                <b-form-input v-model="form.repeatPassword" type="password" placeholder="Repetir contraseña"></b-form-input>
+                                <input 
+                                    :class="
+                                        validated ?
+                                        {
+                                            'is-valid': isValid('repeatPassword'),
+                                            'is-invalid': !isValid('repeatPassword')
+                                        } : {}"
+                                    class="form-control"
+                                    v-model="form.repeatPassword"
+                                    type="password"
+                                    placeholder="Contraseña"
+                                />
 
+                                <div class="invalid-feedback" v-if="formErrors.repeatPassword">
+                                    {{ formErrors.repeatPassword[0] }}
+                                </div>
                             </b-input-group>
                         </b-col>
                     </b-form-row>
                     <b-form-row class="mb-1">
                         <b-col>
                             <b-form-select v-model="form.role_id" :options="rolesList" />
+
+                            <div class="invalid-feedback" v-if="formErrors.role_id">
+                                    {{ formErrors.role_id[0] }}
+                            </div>
                         </b-col>
                     </b-form-row>
                 </b-form>
@@ -72,7 +134,7 @@
                     Cerrar
                 </b-button>
 
-                <b-button :disabled="error || loading" @click="save" variant="primary">
+                <b-button :disabled="error || loading || sending" @click="save" variant="primary">
                     <fa :icon="icons.save"/> Guardar
                 </b-button>
             </b-button-group>
@@ -97,40 +159,55 @@ export default {
                 role_id: null,
                 repeatPassword: '',
             },
-            formErrors: [],
+            formErrors: {},
             roles: [],
             loading: false,
             error: false,
+            sending: false,
         }
     },
     methods: {
         save() {
-            this.formErrors = []
+            this.formErrors = {}
+            this.sending = true
 
             if(this.$route.meta.mode == 'edit') {
-                axios.put(`/api/users/${this.form.id}`)
+                axios.put(`/api/users/${this.form.id}`, this.form)
                     .then( res => {
                         toastr.success(res.message)
                     })
                     .catch( err => {
+                        this.formErrors = err.response.data.errors
                         console.log(err)
                     })
                     .then( () => {
-
+                        this.sending = false
                     })
             } else {
-                axios.post(`/api/users/`)
+                axios.post(`/api/users/`, this.form)
                     .then( res => {
                         toastr.success(res.message)
                     })
                     .catch( err => {
+                        this.formErrors = err.response.data.errors
                         console.log(err)
                     })
                     .then( () => {
-
+                        this.sending = false
                     })
             }
         },
+        isValid(field) {
+            if(!this.validated)
+                return null
+            return typeof this.formErrors[field] == "undefined" ? true : false
+        },
+        isInvalid(field) {
+            !this.isValid(field)
+        },
+        getFeedback(field) {
+            return this.formErrors[field].length >= 1 ? this.formErrors[field][0] : ''
+        }
 
     },
     computed: {
@@ -152,6 +229,9 @@ export default {
             }
 
             return roles
+        },
+        validated() {
+            return Object.keys(this.formErrors).length >= 1
         }
     },
     created() {

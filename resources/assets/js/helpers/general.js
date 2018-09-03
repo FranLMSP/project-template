@@ -69,6 +69,10 @@ export function initialize(store, router) {
             toastr.error('El recurso que está tratando de obtener no existe.')
         }
 
+        if(error.response.status == 422) {
+            toastr.warning('Formulario inválido')
+        }
+
         return Promise.reject(error)
     })
 
