@@ -177,6 +177,7 @@ export default {
                     .then( res => {
                         toastr.success(res.data.message)
                         this.$router.push('/usuarios')
+                        this.$root.$emit('form-done')
                     })
                     .catch( err => {
                         this.formErrors = err.response.data.errors
@@ -189,6 +190,7 @@ export default {
                     .then( res => {
                         toastr.success(res.data.message)
                         this.$router.push('/usuarios')
+                        this.$root.$emit('form-done')
                     })
                     .catch( err => {
                         this.formErrors = err.response.data.errors

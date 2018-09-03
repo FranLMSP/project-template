@@ -110,7 +110,7 @@ export default {
         }
     },
     methods: {
-        list() {
+        get() {
             this.loading = true
             this.error = false
 
@@ -173,7 +173,7 @@ export default {
         }
     },
     created() {
-        this.list();
+        this.get();
         this.$nextTick(function() {
 
             if(this.$route.meta.mode == 'create' || this.$route.meta.mode == 'edit') {
@@ -181,6 +181,10 @@ export default {
             } else {
                 this.hideModal('form-modal')
             }
+        })
+
+        this.$root.$on('form-done', () => {
+            this.get()
         })
 
     }
