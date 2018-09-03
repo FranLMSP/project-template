@@ -65,6 +65,10 @@ export function initialize(store, router) {
             router.push('/')
         }
 
+        if(error.response.status == 404) {
+            toastr.error('El recurso que está tratando de obtener no existe.')
+        }
+
         return Promise.reject(error)
     })
 

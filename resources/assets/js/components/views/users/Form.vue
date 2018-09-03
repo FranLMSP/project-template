@@ -1,27 +1,84 @@
 <template>
-    <div v-if="!loading">
+    <div>
+
+        <div slot="modal-body">
+            <div v-show="loading">
+                <p v-show="!error">Cargando</p>
+                <p v-show="error">Ocurrió un error</p>
+            </div>
+            <div v-show="!loading">
+                <b-form @submit.prevent="save">
+                    <b-form-row class="mb-1">
+                        <b-col md="6" sm="12">
+                            <b-input-group>
+                                <b-input-group-prepend is-text>
+                                  <fa :icon="icons.user"/>
+                                </b-input-group-prepend>
+
+                                <b-form-input v-model="form.username" type="text" placeholder="Nombre de usuario"></b-form-input>
+
+                            </b-input-group>
+                        </b-col>
+                        <b-col md="6" sm="12" class="mt-sm-1 mt-md-0">
+                            <b-input-group>
+                                <b-input-group-prepend is-text>
+                                  <fa :icon="icons.at"/>
+                                </b-input-group-prepend>
+
+                                <b-form-input v-model="form.email" type="email" placeholder="Email"></b-form-input>
+
+                            </b-input-group>
+                        </b-col>
+                    </b-form-row>
+
+                    <b-form-row class="mb-1">
+                        <b-col>
+                            <b-input-group>
+                                <b-input-group-prepend is-text>
+                                  <fa :icon="icons.lock"/>
+                                </b-input-group-prepend>
+
+                                <b-form-input v-model="form.password" type="password" placeholder="Contraseña"></b-form-input>
+
+                            </b-input-group>
+                        </b-col>
+                    </b-form-row>
+
+                    <b-form-row class="mb-1">
+                        <b-col>
+                            <b-input-group>
+                                <b-input-group-prepend is-text>
+                                  <fa :icon="icons.lock"/>
+                                </b-input-group-prepend>
+
+                                <b-form-input v-model="form.repeatPassword" type="password" placeholder="Repetir contraseña"></b-form-input>
+
+                            </b-input-group>
+                        </b-col>
+                    </b-form-row>
+                </b-form>
+                <br>
+            </div>
+        </div>
+
         <div slot="modal-footer" class="w-100">
             <b-button-group  class="float-right">
                 <b-button @click="$router.push('/usuarios')">
                     Cerrar
                 </b-button>
 
-                <b-button @click="save" variant="primary">
+                <b-button :disabled="error || loading" @click="save" variant="primary">
                     <fa :icon="icons.save"/> Guardar
                 </b-button>
             </b-button-group>
         </div>
-    </div>
-    <div v-else class="text-center">
-        <p v-show="!error">Cargando</p>
-        <p v-show="error">Ocurrió un error</p>
     </div>
 </template>
 
 <script type="text/javascript">
 
 
-import { faSave } from '@fortawesome/free-solid-svg-icons'
+import { faSave, faUser, faAt, faLock } from '@fortawesome/free-solid-svg-icons'
 
 export default {
     name: 'users-form',
@@ -49,7 +106,10 @@ export default {
     computed: {
         icons() {
             return {
-                save: faSave
+                save: faSave,
+                user: faUser,
+                at: faAt,
+                lock: faLock
             }
         }
     },
@@ -81,7 +141,6 @@ export default {
                     this.roles = res.data.roles
                 })
                 .catch( err => {
-                    console.log(err)
                     this.error = true
                 })
                 .then( () => {
