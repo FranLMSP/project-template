@@ -25,10 +25,7 @@ export function initialize(store, router) {
 
         if(requiresAdmin && !currentUser.admin) {
             next('/')
-            M.toast({
-                html: 'Usted no tiene privilegios para ver este módulo',
-                classes: 'red'
-            })
+            toastr.error('No tiene permisos para realizar esta acción.')
         }
     })
 
@@ -64,6 +61,7 @@ export function initialize(store, router) {
         }
 
         if(error.response.status == 403) {
+            toastr.error('No tiene permisos para realizar esta acción.')
             router.push('/')
         }
 
