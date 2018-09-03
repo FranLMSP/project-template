@@ -176,7 +176,7 @@ export default {
                 axios.put(`/api/users/${this.form.id}`, this.form)
                     .then( res => {
                         toastr.success(res.data.message)
-                        this.$root.$emit('form-done')
+                        this.$router.push('/usuarios')
                     })
                     .catch( err => {
                         this.formErrors = err.response.data.errors
@@ -188,7 +188,7 @@ export default {
                 axios.post(`/api/users/`, this.form)
                     .then( res => {
                         toastr.success(res.data.message)
-                        this.$root.$emit('form-done')
+                        this.$router.push('/usuarios')
                     })
                     .catch( err => {
                         this.formErrors = err.response.data.errors

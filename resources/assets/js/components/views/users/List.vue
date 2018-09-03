@@ -45,9 +45,14 @@
                                     <td><span>{{ user.username }}</span></td>
                                     <td><span>{{ user.email }}</span></td>
                                     <td>
-                                        <b-button size="sm" variant="success" v-b-tooltip.hover title="Ver permisos">
+                                        <router-link
+                                            :to="{name: 'user-permissions-edit', params: {id: user.id}}"
+                                            class="btn btn-sm btn-success"
+                                            v-b-tooltip.hover
+                                            v-b-modal.form-modal
+                                            title="Editar permisos">
                                             <fa :icon="icons.key"/>
-                                        </b-button>
+                                        </router-link>
                                         <router-link
                                             :to="{name: 'user-edit', params: {id: user.id}}"
                                             class="btn btn-sm btn-primary"
@@ -178,10 +183,6 @@ export default {
             }
         })
 
-        this.$root.$on('form-done', () => {
-            this.list()
-            this.hideModal('form-modal')
-        })
     }
 }
 

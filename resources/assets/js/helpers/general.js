@@ -62,7 +62,6 @@ export function initialize(store, router) {
 
         if(error.response.status == 403) {
             toastr.error('No tiene permisos para realizar esta acción.')
-            router.push('/')
         }
 
         if(error.response.status == 404) {
