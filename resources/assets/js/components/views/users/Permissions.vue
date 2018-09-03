@@ -1,16 +1,36 @@
 <template>
-    <div v-if="loading || error">
-        <p v-show="!error">Cargando</p>
-        <p v-show="error">Ocurrió un error</p>
-    </div>
-    <div v-else>
-        <pre>
-            {{user}}
-        </pre>
+    <div>
+        <div slot="modal-body">
+            <template v-if="loading || error">
+                <p v-show="!error">Cargando</p>
+                <p v-show="error">Ocurrió un error</p>
+            </template>
+            <template v-else>
+                <b-row>
+                </b-row>
+                <pre>
+                    {{user}}
+                </pre>
+            </template>
+        </div>
+
+        <div slot="modal-footer" class="w-100">
+            <b-button-group  class="float-right">
+                <b-button @click="$router.push('/usuarios')">
+                    Cerrar
+                </b-button>
+
+                <b-button :disabled="error || loading || sending" @click="save" variant="primary">
+                    <fa :icon="icons.save"/> Guardar
+                </b-button>
+            </b-button-group>
+        </div>
     </div>
 </template>
 
 <script type="text/javascript">
+
+import { faSave } from '@fortawesome/free-solid-svg-icons'
 
 export default {
     name: 'user-permissions',
@@ -24,7 +44,9 @@ export default {
                 email: '',
                 permissions: []
             },
+            formErrors: {},
             loading: false,
+            sending: false,
             error: false,
         }
     },
@@ -44,9 +66,31 @@ export default {
                     this.error = true
                 })
                 .then( () => {
-                    this.lading = false
+                    this.loading = false
+                })
+        },
+        save() {
+            this.sending = true
+            axios.put(`/api/permissions/users/${this.user.id}`)
+                .then( res => {
+                    toastr.success(res.data.message)
+                    this.$router.push('/usuarios')
+                    this.$root.$emit('form-done')
+                })
+                .catch( err => {
+                    this.formErrors = err.response.data.errors
+                })
+                .then( () => {
+                    this.sending = false
                 })
         }
+    },
+    computed: {
+        icons() {
+            return {
+                save: faSave,
+            }
+        },
     },
     created() {
         this.get()
