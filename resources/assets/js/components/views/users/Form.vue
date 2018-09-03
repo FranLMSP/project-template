@@ -6,7 +6,7 @@
                 <p v-show="!error">Cargando</p>
                 <p v-show="error">Ocurrió un error</p>
             </div>
-            <div v-show="!loading">
+            <div v-show="!loading && !error">
                 <b-form @submit.prevent="save">
                     <b-form-row class="mb-1">
                         <b-col md="6" sm="12">
@@ -56,6 +56,11 @@
                             </b-input-group>
                         </b-col>
                     </b-form-row>
+                    <b-form-row class="mb-1">
+                        <b-col>
+                            <b-form-select v-model="form.role_id" :options="rolesList" />
+                        </b-col>
+                    </b-form-row>
                 </b-form>
                 <br>
             </div>
@@ -89,9 +94,10 @@ export default {
                 username: '',
                 email: '',
                 password: '',
-                role_id: '',
+                role_id: null,
                 repeatPassword: '',
             },
+            formErrors: [],
             roles: [],
             loading: false,
             error: false,
@@ -99,7 +105,31 @@ export default {
     },
     methods: {
         save() {
+            this.formErrors = []
 
+            if(this.$route.meta.mode == 'edit') {
+                axios.put(`/api/users/${this.form.id}`)
+                    .then( res => {
+                        toastr.success(res.message)
+                    })
+                    .catch( err => {
+                        console.log(err)
+                    })
+                    .then( () => {
+
+                    })
+            } else {
+                axios.post(`/api/users/`)
+                    .then( res => {
+                        toastr.success(res.message)
+                    })
+                    .catch( err => {
+                        console.log(err)
+                    })
+                    .then( () => {
+
+                    })
+            }
         },
 
     },
@@ -111,6 +141,17 @@ export default {
                 at: faAt,
                 lock: faLock
             }
+        },
+        rolesList() {
+            let roles = []
+            for(let i=0; i<this.roles.length; i++) {
+                roles.push({
+                    value: this.roles[i].id,
+                    text: this.roles[i].name
+                })
+            }
+
+            return roles
         }
     },
     created() {
@@ -139,6 +180,11 @@ export default {
             axios.get(`/api/users/create`)
                 .then( res => {
                     this.roles = res.data.roles
+
+                    if(this.roles.length >= 1) {
+                        this.form.role_id = this.roles[0].id
+
+                    }
                 })
                 .catch( err => {
                     this.error = true
