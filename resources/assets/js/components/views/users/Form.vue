@@ -68,6 +68,7 @@
                                   <fa :icon="icons.lock"/>
                                 </b-input-group-prepend>
 
+
                                 <input 
                                     :class="
                                         validated ?
@@ -78,7 +79,7 @@
                                     class="form-control"
                                     v-model="form.password"
                                     type="password"
-                                    placeholder="Contraseña"
+                                    :placeholder="`Contraseña ${$route.meta.mode == 'edit' ? '(dejar en blanco si NO se desea cambiar)' : ''}`"
                                 />
 
                                 <div class="invalid-feedback" v-if="formErrors.password">
@@ -105,7 +106,7 @@
                                     class="form-control"
                                     v-model="form.repeatPassword"
                                     type="password"
-                                    placeholder="Contraseña"
+                                    :placeholder="`Repetir contraseña ${$route.meta.mode == 'edit' ? '(dejar en blanco si NO se desea cambiar)' : ''}`"
                                 />
 
                                 <div class="invalid-feedback" v-if="formErrors.repeatPassword">
