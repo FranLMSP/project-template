@@ -42,6 +42,12 @@
                                         <b-button size="sm" variant="success" v-b-tooltip.hover title="Ver permisos">
                                             <fa :icon="icons.key"/>
                                         </b-button>
+                                        <b-button size="sm" variant="primary" v-b-tooltip.hover title="Editar">
+                                            <fa :icon="icons.edit"/>
+                                        </b-button>
+                                        <b-button size="sm" variant="danger" v-b-tooltip.hover title="Eliminar">
+                                            <fa :icon="icons.trash"/>
+                                        </b-button>
                                     </td>
                                 </tr>
                             </template>
@@ -70,7 +76,7 @@
 
 <script type="text/javascript">
 
-import { faKey, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faKey, faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 export default {
     name: 'UsersList',
@@ -111,7 +117,9 @@ export default {
         icons() {
             return {
                 key: faKey,
-                plus: faPlus
+                plus: faPlus,
+                edit: faEdit,
+                trash: faTrash,
             }
         }
     },
