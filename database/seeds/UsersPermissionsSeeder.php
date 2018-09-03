@@ -35,6 +35,21 @@ class UsersPermissionsSeeder extends Seeder
             'user_id' => 1, //Usuario creado
         ]);
         factory(MethodModuleUser::class)->create([
+            'method_id' => 2, //POST
+            'module_id' => 4, //API CREAR
+            'user_id' => 1, //Usuario creado
+        ]);
+        factory(MethodModuleUser::class)->create([
+            'method_id' => 3, //PUT
+            'module_id' => 5, //API MODIFICAR
+            'user_id' => 1, //Usuario creado
+        ]);
+        factory(MethodModuleUser::class)->create([
+            'method_id' => 3, //DELETE
+            'module_id' => 5, //API BORRAR
+            'user_id' => 1, //Usuario creado
+        ]);
+        factory(MethodModuleUser::class)->create([
             'method_id' => 1, //GET
             'module_id' => 5, //API OBTENER
             'user_id' => 1, //Usuario creado
