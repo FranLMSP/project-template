@@ -178,6 +178,10 @@ export default {
             }
         })
 
+        this.$root.$on('form-done', () => {
+            this.list()
+            this.hideModal('form-modal')
+        })
     }
 }
 

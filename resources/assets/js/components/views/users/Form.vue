@@ -174,11 +174,11 @@ export default {
             if(this.$route.meta.mode == 'edit') {
                 axios.put(`/api/users/${this.form.id}`, this.form)
                     .then( res => {
-                        toastr.success(res.message)
+                        toastr.success(res.data.message)
+                        this.$root.$emit('form-done')
                     })
                     .catch( err => {
                         this.formErrors = err.response.data.errors
-                        console.log(err)
                     })
                     .then( () => {
                         this.sending = false
@@ -186,11 +186,11 @@ export default {
             } else {
                 axios.post(`/api/users/`, this.form)
                     .then( res => {
-                        toastr.success(res.message)
+                        toastr.success(res.data.message)
+                        this.$root.$emit('form-done')
                     })
                     .catch( err => {
                         this.formErrors = err.response.data.errors
-                        console.log(err)
                     })
                     .then( () => {
                         this.sending = false
@@ -250,7 +250,6 @@ export default {
                     this.form.repeatPassword = ''
                 })
                 .catch( err => {
-                    console.log(err)
                     this.error = true
                 })
                 .then( () => {
