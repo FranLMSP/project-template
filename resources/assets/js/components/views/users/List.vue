@@ -1,5 +1,11 @@
 <template>
     <div>
+        <b-modal
+            id="form-modal"
+            :title="modalTitle" hide-footer>
+            <router-view></router-view>
+        </b-modal>
+
         <b-row>
             <b-col>
                 <b-card>
@@ -8,9 +14,9 @@
                             <h2>Usuarios</h2>
                         </b-col>
                         <b-col>
-                            <b-button class="float-right" variant="primary">
+                            <router-link v-b-modal.form-modal class="btn btn-primary float-right" :to="{name: 'user-create', params: {id: 1}}">
                                 <fa :icon="icons.plus"/> Crear usuario
-                            </b-button>
+                            </router-link>
                         </b-col>
                     </b-row>
                 </b-card>
@@ -78,13 +84,19 @@
 
 import { faKey, faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
+import UsersForm from './Form.vue'
+
 export default {
     name: 'UsersList',
+    components: {
+        UsersForm
+    },
     data() {
         return {
             users: [],
             loading: false,
-            error: false
+            error: false,
+            modalShow: false,
         }
     },
     methods: {
@@ -105,7 +117,13 @@ export default {
         },
         isUser(user) {
             return user.id == this.currentUser.id
-        }
+        },
+        showModal (id) {
+            this.$root.$emit('bv::show::modal', id)
+        },
+        hideModal (id) {
+            this.$root.$emit('bv::hide::modal', id)
+        },
     },
     computed: {
         currentUser() {
@@ -121,10 +139,40 @@ export default {
                 edit: faEdit,
                 trash: faTrash,
             }
+        },
+        modalTitle() {
+            if(this.$route.meta.mode == 'create') {
+                return 'Crear'
+            }
+
+            if(this.$route.meta.mode == 'edit') {
+                return 'Modificar'
+            }
+
+            return 'Formulario'
+        }
+    },
+    watch:{
+        $route (to, from){
+            if(to.meta.mode == 'create' || to.meta.mode == 'edit') {
+                this.showModal('form-modal')
+            } else {
+                this.hideModal('form-modal')
+            }
+
         }
     },
     created() {
         this.list();
+        this.$nextTick(function() {
+            
+            if(this.$route.meta.mode == 'create' || this.$route.meta.mode == 'edit') {
+                this.showModal('form-modal')
+            } else {
+                this.hideModal('form-modal')
+            }
+        })
+
     }
 }
 

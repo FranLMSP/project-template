@@ -13,21 +13,26 @@ export default {
     children: [
         {
             path: '/',
-            component: List
-        },
-        {
-            path: 'crear',
-            component: Form,
-            meta: {
-                mode: 'create'
-            }
-        },
-        {
-            path: ':id/editar',
-            component: Form,
-            meta: {
-                mode: 'edit'
-            }
+            component: List,
+            children: [
+                {
+                    path: 'crear',
+                    name: 'user-create',
+                    component: Form,
+                    meta: {
+                        mode: 'create'
+                    }
+                },
+                {
+                    path: ':id/editar',
+                    name: 'user-edit',
+                    component: Form,
+                    meta: {
+                        mode: 'edit'
+                    }
+                },
+
+            ]
         },
         {
             path: ':id',
