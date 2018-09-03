@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 
 use App\MethodModuleUser;
+use App\Module;
+use App\Method;
 
 class UsersPermissionsSeeder extends Seeder
 {
@@ -13,56 +15,45 @@ class UsersPermissionsSeeder extends Seeder
      */
     public function run()
     {
-        //Poder permisos del módulo de usuarios
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 1, //GET
-            'module_id' => 1, //Padre CONFIGURACION
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 1, //GET
-            'module_id' => 2, //Hijo USUARIOS
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 1, //GET
-            'module_id' => 3, //Hijo LISTAR
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 1, //GET
-            'module_id' => 4, //API LISTAR
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 2, //POST
-            'module_id' => 4, //API CREAR
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 3, //PUT
-            'module_id' => 5, //API MODIFICAR
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 3, //DELETE
-            'module_id' => 5, //API BORRAR
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 1, //GET
-            'module_id' => 5, //API OBTENER
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 1, //GET
-            'module_id' => 6, //API CREATE
-            'user_id' => 1, //Usuario creado
-        ]);
-        factory(MethodModuleUser::class)->create([
-            'method_id' => 1, //GET
-            'module_id' => 7, //API GET EDIT
-            'user_id' => 1, //Usuario creado
-        ]);
+        $this->autoInsertPermissions();
     }
+
+    private function autoInsertPermissions()
+    {
+        $modules = Module::where('api', true)->get();
+        $methods = Method::get();
+
+        foreach($modules as $module) {
+            if(
+                strpos('create', $module->url) !== false || 
+                strpos('edit', $module->url) !== false
+            ) {
+                factory(MethodModuleUser::class)->create([
+                    'method_id' => $this->findMethod($methods, 'GET')->id,
+                    'module_id' => $module->id,
+                    'user_id' => 1,
+                ]);
+            } else {
+                foreach($methods as $method) {
+                    factory(MethodModuleUser::class)->create([
+                        'method_id' => $method->id,
+                        'module_id' => $module->id,
+                        'user_id' => 1,
+                    ]);
+
+                }
+            }
+        }
+    }
+
+    private function findMethod($methods, $name)
+    {
+        foreach($methods as $method) {
+            if($method->name == $name) {
+                return $method;
+            }
+        }
+        return false;
+    }
+
 }
