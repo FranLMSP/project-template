@@ -1,66 +1,61 @@
 <template>
-    <container fluid>
+    <b-container>
         <br>
-        <row>
-            <column col="12" md="6" class="offset-md-3">
-                <card>
-                    <card-body>
-                        <form @submit.prevent="authenticate">
-                            <p class="h4 text-center py-4">Iniciar sesión</p>
-                            <div class="grey-text">
-                                <md-input v-model="form.username" label="Usuario" icon="user" group type="text" />
-                                <md-input v-model="form.password" label="Contraseña" icon="lock" group type="password" validate/>
-                            </div>
+        <b-row>
+            <b-col sm="12" md="6" offset-md="3">
+                <b-card title="¡Bienvenido!" class="mb-2 text-center">
+                    <b-form @submit.prevent="authenticate">
+                        <p class="card-text">
+                            Ingrese su usuario y su contraseña
+                        </p>
+                        <b-form-row>
+                            <b-col>
+                                <b-input-group>
+                                    <b-input-group-prepend is-text>
+                                      <fa :icon="icon.user"/>
+                                    </b-input-group-prepend>
 
-                            <div class="text-center py-4 mt-3">
-                                <btn :disabled="loading" color="cyan" type="submit">Iniciar Sesión</btn>
-                            </div>
+                                    <b-form-input v-model="form.username" type="text" placeholder="Nombre de usuario"></b-form-input>
 
-                            <div v-if="error">
-                                <p style="color: red"><strong>Usuario o contraseña inválidos</strong></p>
-                            </div>
-                            <div v-if="success">
-                                ¡Bienvenido! Por favor espere
-                            </div>
+                                </b-input-group>
+                            </b-col>
+                        </b-form-row>
 
-                        </form>
-                    </card-body>
-                </card>
-            </column>
-        </row>
-    </container>
+                        <br>
 
+                        <b-form-row>
+                            <b-col>
+                                <b-input-group>
+                                    <b-input-group-prepend is-text>
+                                      <fa :icon="icon.lock"/>
+                                    </b-input-group-prepend>
+
+                                    <b-form-input v-model="form.password" type="password" placeholder="Contraseña"></b-form-input>
+
+                                </b-input-group>
+                            </b-col>
+                        </b-form-row>
+
+                        <br>
+
+                        <b-form-row>
+                            <b-col>
+                                <b-button type="submit" block size="lg" :disabled="loading" variant="primary">Iniciar sesión</b-button>
+                            </b-col>
+                        </b-form-row>
+                    </b-form>
+                </b-card>
+            </b-col>
+        </b-row>
+    </b-container>
 </template>
 
 <script type="text/javascript">
     import {login} from '../../../helpers/auth.js'
 
-    import {
-        Row,
-        Column,
-        Container,
-        Card,
-        CardImg,
-        CardBody,
-        CardTitle,
-        CardText,
-        MdInput,
-        Btn
-    } from 'mdbvue'
+    import { faUser, faLock } from '@fortawesome/free-solid-svg-icons'
 
     export default {
-        components: {
-            Row,
-            Column,
-            Container,
-            Card,
-            CardImg,
-            CardBody,
-            CardTitle,
-            CardText,
-            MdInput,
-            Btn
-        },
         data() {
             return {
                 form: {
@@ -95,6 +90,12 @@
         computed: {
             authError() {
                 return this.$store.getters.authError
+            },
+            icon() {
+                return {
+                    user: faUser,
+                    lock: faLock
+                }
             }
         },
         created() {

@@ -10,8 +10,15 @@ import MainApp from './components/MainApp.vue'
 
 import {initialize} from './helpers/general'
 
+import BootstrapVue from 'bootstrap-vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+Vue.component('fa', FontAwesomeIcon)
+
 Vue.use(VueRouter)
 vue.use(Vuex)
+
+Vue.use(BootstrapVue)
 
 const store = new Vuex.Store(StoreData)
 

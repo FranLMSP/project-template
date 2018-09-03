@@ -17,7 +17,7 @@ class ModulesTableSeeder extends Seeder
         factory(Module::class)->create([
             'id' => 1,
             'name' => 'Configuración',
-            'description' => 'Módulo padre para configuración'
+            'description' => 'Módulo padre para configuración',
             'icon' => 'cog', //Ícono de configuración,
             'url' => '/',
             'api' => false,
