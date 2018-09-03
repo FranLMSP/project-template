@@ -14,7 +14,7 @@
                             <h2>Usuarios</h2>
                         </b-col>
                         <b-col>
-                            <router-link v-b-modal.form-modal class="btn btn-primary float-right" :to="{name: 'user-create', params: {id: 1}}">
+                            <router-link v-b-modal.form-modal class="btn btn-primary float-right" :to="{name: 'user-create'}">
                                 <fa :icon="icons.plus"/> Crear usuario
                             </router-link>
                         </b-col>
@@ -48,9 +48,14 @@
                                         <b-button size="sm" variant="success" v-b-tooltip.hover title="Ver permisos">
                                             <fa :icon="icons.key"/>
                                         </b-button>
-                                        <b-button size="sm" variant="primary" v-b-tooltip.hover title="Editar">
+                                        <router-link
+                                            :to="{name: 'user-edit', params: {id: user.id}}"
+                                            class="btn btn-sm btn-primary"
+                                            v-b-tooltip.hover
+                                            v-b-modal.form-modal
+                                            title="Editar">
                                             <fa :icon="icons.edit"/>
-                                        </b-button>
+                                        </router-link>
                                         <b-button size="sm" variant="danger" v-b-tooltip.hover title="Eliminar">
                                             <fa :icon="icons.trash"/>
                                         </b-button>
@@ -165,7 +170,7 @@ export default {
     created() {
         this.list();
         this.$nextTick(function() {
-            
+
             if(this.$route.meta.mode == 'create' || this.$route.meta.mode == 'edit') {
                 this.showModal('form-modal')
             } else {
