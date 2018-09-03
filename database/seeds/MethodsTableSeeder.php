@@ -16,20 +16,25 @@ class MethodsTableSeeder extends Seeder
         Method::truncate();
 
         factory(Method::class)->create([
+            'id' => 1,
             'name' => 'GET',
             'description' => 'Obtener',
         ]);
         factory(Method::class)->create([
+            'id' => 2,
             'name' => 'POST',
             'description' => 'Crear',
         ]);
         factory(Method::class)->create([
+            'id' => 3,
             'name' => 'PUT',
             'description' => 'Modificar',
         ]);
         factory(Method::class)->create([
+            'id' => 4,
             'name' => 'DELETE',
             'description' => 'Borrar',
         ]);
+
     }
 }

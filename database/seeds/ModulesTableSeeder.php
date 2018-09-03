@@ -14,6 +14,7 @@ class ModulesTableSeeder extends Seeder
     {
         Module::truncate();
 
+        //Módulos de MENU
         factory(Module::class)->create([
             'id' => 1,
             'name' => 'Configuración',
@@ -25,5 +26,45 @@ class ModulesTableSeeder extends Seeder
             'priority' => 0,
             'module_id' => NULL,
         ]);
+
+        factory(Module::class)->create([
+            'id' => 2,
+            'name' => 'Usuarios',
+            'description' => 'Módulo hijo para listar usuarios',
+            'icon' => 'cog', //Ícono de configuración,
+            'url' => '/',
+            'api' => false,
+            'active' => true,
+            'priority' => 0,
+            'module_id' => 1,
+        ]);
+
+        factory(Module::class)->create([
+            'id' => 3,
+            'name' => 'Listar',
+            'description' => 'Módulo nieto para listar usuarios',
+            'icon' => 'cog', //Ícono de configuración,
+            'url' => '/usuarios',
+            'api' => false,
+            'active' => true,
+            'priority' => 0,
+            'module_id' => 2,
+        ]);
+
+        factory(Module::class)->create([
+            'id' => 4,
+            'name' => 'Listar',
+            'description' => 'Módulo nieto para listar usuarios API',
+            'icon' => 'cog', //Ícono de configuración,
+            'url' => 'users',
+            'api' => true, //API
+            'active' => true,
+            'priority' => 0,
+            'module_id' => 2,
+        ]);
+
+
+
+        //Módulos de API
     }
 }

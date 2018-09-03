@@ -16,6 +16,7 @@ class RolesTableSeeder extends Seeder
         Role::truncate();
 
         factory(Role::class)->create([
+            'id' => 1,
             'name' => 'Administrador',
             'description' => 'Usuario con todos los privilegios'
         ]);
