@@ -230,7 +230,7 @@ export default {
 
 </script>
 
-<style type="text/css" scoped>
+<style type="text/css">
 
 th, td {
     font-size: small;
@@ -239,6 +239,10 @@ th, td {
 .methodInput, .methodName {
     text-align: right; /* center checkbox horizontally */
     vertical-align: middle; /* center checkbox vertically */
+}
+
+.custom-control-label {
+    cursor: pointer !important;
 }
 
 </style>
