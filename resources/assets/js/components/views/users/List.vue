@@ -84,6 +84,14 @@
                             </tr>
                         </tfoot>
                     </table>
+                    <b-pagination
+                        @change="get"
+                        align="right"
+                        size="md"
+                        :total-rows="pagination.total"
+                        v-model="pagination.current_page"
+                        :per-page="pagination.per_page">
+                    </b-pagination>
                 </b-card>
             </b-col>
         </b-row>
@@ -107,6 +115,14 @@ export default {
             loading: false,
             error: false,
             modalShow: false,
+            pagination: {
+                total: 0,
+                current_page: 3,
+                per_page: 0,
+                last_page: 0,
+                from: 0,
+                to: 0
+            }
         }
     },
     methods: {
@@ -140,13 +156,16 @@ export default {
                     })
                 })
         },
-        get() {
+        get(page = 1) {
             this.loading = true
             this.error = false
 
-            axios.get('/api/users')
+            this.pagination.current_page = page
+
+            axios.get('/api/users?page='+this.pagination.current_page)
                 .then( res => {
                     this.users = res.data.users
+                    this.pagination = res.data.pagination
                 })
                 .catch( err => {
                     this.error = true
