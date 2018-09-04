@@ -6,11 +6,92 @@
                 <p v-show="error">Ocurrió un error</p>
             </template>
             <template v-else>
-                <b-row>
-                </b-row>
-                <pre>
-                    {{user}}
-                </pre>
+
+                <div class="card p-3 mb-2" v-for="module in modules">
+
+                    <div class="card-text">
+                        <table class="text-centered" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>{{ module.name }}</span> 
+                                        <b-badge v-show="module.api" variant="secondary">
+                                            API
+                                        </b-badge>
+                                    </th>
+                                    <th  class="methodName" v-for="method in methods" v-if="showMethod(method, module)">
+                                        <b-badge variant="light">{{ method.description }}</b-badge>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ module.url }}</td>
+                                    <td class="methodInput" v-for="method in methods" v-if="showMethod(method, module)">
+                                        <b-form-checkbox />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card p-3" v-for="child in module.childs">
+
+                        <div class="card-text">
+                            <table class="text-centered" style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <span>{{ child.name }}</span> 
+                                            <b-badge v-show="child.api" variant="secondary">
+                                                API
+                                            </b-badge>
+                                        </th>
+                                        <th  class="methodName" v-for="method in methods" v-if="showMethod(method, child)">
+                                            <b-badge variant="light">{{ method.description }}</b-badge>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ child.url }}</td>
+                                        <td class="methodInput" v-for="method in methods" v-if="showMethod(method, child)">
+                                            <b-form-checkbox />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card p-3" v-for="grandchild in child.childs">
+                            <div class="card-text">
+                                <table class="text-centered" style="width: 100%">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <span>{{ grandchild.name }}</span> 
+                                                <b-badge v-show="grandchild.api" variant="secondary">
+                                                    API
+                                                </b-badge>
+                                            </th>
+                                            <th  class="methodName" v-for="method in methods" v-if="showMethod(method, grandchild)">
+                                                <b-badge variant="light">{{ method.description }}</b-badge>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ grandchild.url }}</td>
+                                            <td class="methodInput" v-for="method in methods" v-if="showMethod(method, grandchild)">
+                                                <b-form-checkbox />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </template>
         </div>
 
@@ -83,6 +164,22 @@ export default {
                 .then( () => {
                     this.sending = false
                 })
+        },
+        showMethod(method, module) {
+            if(module.api) {
+                if( module.url.indexOf('edit') !== -1 || module.url.indexOf('create') !== -1 ) {
+                    if(method.name == 'GET') {
+                        return true
+                    }
+                } else {
+                    return true
+                }
+            } else {
+                if(method.name == 'GET') {
+                    return true
+                }
+            }
+            return false
         }
     },
     computed: {
@@ -98,3 +195,16 @@ export default {
 }
 
 </script>
+
+<style type="text/css" scoped>
+
+th, td {
+    font-size: small;
+}
+
+.methodInput, .methodName {
+    text-align: right; /* center checkbox horizontally */
+    vertical-align: middle; /* center checkbox vertically */
+}
+
+</style>

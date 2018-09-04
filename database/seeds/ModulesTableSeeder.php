@@ -55,7 +55,7 @@ class ModulesTableSeeder extends Seeder
 
         factory(Module::class)->create([
             'id' => 4,
-            'name' => 'Listar',
+            'name' => 'Usuarios',
             'description' => 'Módulo nieto para interactuar usuarios API',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'users',
@@ -66,7 +66,7 @@ class ModulesTableSeeder extends Seeder
         ]);
         factory(Module::class)->create([
             'id' => 5,
-            'name' => 'Listar',
+            'name' => 'Usuario',
             'description' => 'Módulo nieto para interactuar usuarios API',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'users/{user}',
@@ -77,7 +77,7 @@ class ModulesTableSeeder extends Seeder
         ]);
         factory(Module::class)->create([
             'id' => 6,
-            'name' => 'Listar',
+            'name' => 'Datos crear usuario',
             'description' => 'Módulo nieto para listar datos necesarios para crear',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'users/create',
@@ -88,7 +88,7 @@ class ModulesTableSeeder extends Seeder
         ]);
         factory(Module::class)->create([
             'id' => 7,
-            'name' => 'Listar',
+            'name' => 'Datos editar usuario',
             'description' => 'Módulo nieto para listar datos necesarios para editar',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'users/{user}/edit',
@@ -99,7 +99,7 @@ class ModulesTableSeeder extends Seeder
         ]);
         factory(Module::class)->create([
             'id' => 8,
-            'name' => 'Listar',
+            'name' => 'Permisos Usuarios',
             'description' => 'Módulo nieto para datos necesarios para listar usuarios y permisos',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'permissions/users',
@@ -110,7 +110,7 @@ class ModulesTableSeeder extends Seeder
         ]);
         factory(Module::class)->create([
             'id' => 9,
-            'name' => 'Listar',
+            'name' => 'Crear Permisos Usuario',
             'description' => 'Módulo nieto para datos necesarios para listar datos para crear permisos',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'permissions/users/create',
@@ -121,7 +121,7 @@ class ModulesTableSeeder extends Seeder
         ]);
         factory(Module::class)->create([
             'id' => 10,
-            'name' => 'Listar',
+            'name' => 'Permisos de usuario',
             'description' => 'Módulo nieto para interactuar con los permisos del usuario',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'permissions/users/{user}',
@@ -132,7 +132,7 @@ class ModulesTableSeeder extends Seeder
         ]);
         factory(Module::class)->create([
             'id' => 11,
-            'name' => 'Listar',
+            'name' => 'Datos editar permisos usuario',
             'description' => 'Módulo nieto para datos necesarios para editar permisos',
             'icon' => 'cog', //Ícono de configuración,
             'url' => 'permissions/users/{user}/edit',
