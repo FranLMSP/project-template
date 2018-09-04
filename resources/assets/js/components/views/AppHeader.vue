@@ -23,8 +23,10 @@
                         <template slot="button-content">
                             <em>{{ currentUser.username }}</em>
                         </template>
-                        <b-dropdown-item href="#">Perfil</b-dropdown-item>
-                        <b-dropdown-item href="#">Cerrar sesión</b-dropdown-item>
+                        <b-dropdown-item>Perfil</b-dropdown-item>
+                        <b-dropdown-item @click="logout">
+                            <fa :icon="icons.powerOff"/> Cerrar sesión
+                        </b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
 
@@ -74,7 +76,7 @@ export default {
         },
     },
     computed: {
-        icon() {
+        icons() {
             return {
                 powerOff: faPowerOff
             }
