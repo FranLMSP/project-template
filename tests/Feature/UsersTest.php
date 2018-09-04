@@ -373,6 +373,9 @@ class UsersTest extends TestCase
             'password' => bcrypt('123456'),
             'role_id' => $role->id,
         ]);
+
+        $newUser = factory(User::class)->create();
+
         //Obtenemos su token para la sesion
         $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
 
@@ -387,12 +390,12 @@ class UsersTest extends TestCase
 
         //Se prueba que se listen correctamente los datos.
         $this->withHeaders(["Authorization" => 'Bearer '.$token])
-        ->delete('/api/users/'.$user->id)
+        ->delete('/api/users/'.$newUser->id)
         ->assertStatus(200);
 
         //Se comprueba que se haya borrado el usuario correctamente
         $this->assertDatabaseMissing('users', [
-            'id' => $user->id
+            'id' => $newUser->id
         ]);
     }
 
