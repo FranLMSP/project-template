@@ -25,10 +25,7 @@ export function initialize(store, router) {
 
         if(requiresAdmin && !currentUser.admin) {
             next('/')
-            M.toast({
-                html: 'Usted no tiene privilegios para ver este módulo',
-                classes: 'red'
-            })
+            toastr.error('No tiene permisos para realizar esta acción.')
         }
     })
 
@@ -64,7 +61,15 @@ export function initialize(store, router) {
         }
 
         if(error.response.status == 403) {
-            router.push('/')
+            toastr.error('No tiene permisos para realizar esta acción.')
+        }
+
+        if(error.response.status == 404) {
+            toastr.error('El recurso que está tratando de obtener no existe.')
+        }
+
+        if(error.response.status == 422) {
+            toastr.warning('Formulario inválido')
         }
 
         return Promise.reject(error)

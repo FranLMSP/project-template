@@ -178,7 +178,7 @@ class RolePermissionController extends Controller
         MethodModuleRole::insert($data);
 
         return response()->json([
-            'mensaje' => 'Permisos asignados correctamente'
+            'message' => 'Permisos asignados correctamente'
         ]);
     }
 

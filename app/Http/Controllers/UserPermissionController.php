@@ -200,7 +200,7 @@ class UserPermissionController extends Controller
         MethodModuleUser::insert($data);
 
         return response()->json([
-            'mensaje' => 'Permisos asignados correctamente'
+            'message' => 'Permisos asignados correctamente'
         ]);
     }
 
