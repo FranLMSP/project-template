@@ -28,7 +28,10 @@
                                 <tr>
                                     <td>{{ module.url }}</td>
                                     <td class="methodInput" v-for="method in methods" v-if="showMethod(method, module)">
-                                        <b-form-checkbox />
+                                        <b-form-checkbox
+                                            v-model="form.permissions" 
+                                            :value="{method_id: method.id, module_id: module.id}"
+                                        />
                                     </td>
                                 </tr>
                             </tbody>
@@ -56,7 +59,10 @@
                                     <tr>
                                         <td>{{ child.url }}</td>
                                         <td class="methodInput" v-for="method in methods" v-if="showMethod(method, child)">
-                                            <b-form-checkbox />
+                                            <b-form-checkbox
+                                                v-model="form.permissions" 
+                                                :value="{method_id: method.id, module_id: child.id}"
+                                            />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -83,7 +89,10 @@
                                         <tr>
                                             <td>{{ grandchild.url }}</td>
                                             <td class="methodInput" v-for="method in methods" v-if="showMethod(method, grandchild)">
-                                                <b-form-checkbox />
+                                                <b-form-checkbox
+                                                    v-model="form.permissions" 
+                                                    :value="{method_id: method.id, module_id: grandchild.id}"
+                                                />
                                             </td>
                                         </tr>
                                     </tbody>
@@ -92,6 +101,14 @@
                         </div>
                     </div>
                 </div>
+
+                <b-alert :show="formErrors" variant="danger">
+                    <ul v-if="formErrors">
+                        <li v-for="error in formErrors">
+                            {{ error }}
+                        </li>
+                    </ul>
+                </b-alert>
             </template>
         </div>
 
@@ -125,7 +142,10 @@ export default {
                 email: '',
                 permissions: []
             },
-            formErrors: {},
+            form: {
+                permissions: [],
+            },
+            formErrors: null,
             loading: false,
             sending: false,
             error: false,
@@ -142,6 +162,8 @@ export default {
                     this.methods = res.data.methods
                     this.modules = res.data.modules
                     this.user = res.data.user
+
+                    this.form.permissions = this.parsePermissions(this.user)
                 })
                 .catch( err => {
                     this.error = true
@@ -150,9 +172,21 @@ export default {
                     this.loading = false
                 })
         },
+        parsePermissions(user) {
+            let permissions = []
+
+            for(let i=0; i<user.permissions.length; i++) {
+                permissions.push({
+                    method_id: user.permissions[i].method.id,
+                    module_id: user.permissions[i].module.id,
+                });
+            }
+
+            return permissions
+        },
         save() {
             this.sending = true
-            axios.put(`/api/permissions/users/${this.user.id}`)
+            axios.put(`/api/permissions/users/${this.user.id}`, this.form)
                 .then( res => {
                     toastr.success(res.data.message)
                     this.$router.push('/usuarios')
