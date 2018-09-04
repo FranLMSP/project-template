@@ -61,7 +61,7 @@
                                             title="Editar">
                                             <fa :icon="icons.edit"/>
                                         </router-link>
-                                        <b-button size="sm" variant="danger" v-b-tooltip.hover title="Eliminar">
+                                        <b-button v-if="user.id != currentUser.id" @click="deletePrompt(user.id)" size="sm" variant="danger" v-b-tooltip.hover title="Eliminar">
                                             <fa :icon="icons.trash"/>
                                         </b-button>
                                     </td>
@@ -110,6 +110,36 @@ export default {
         }
     },
     methods: {
+        deletePrompt(id) {
+            Swal.queue([{
+                title: '¿Borrar usuario?',
+                showCancelButton: true,
+                type: 'warning',
+                confirmButtonText: 'Sí, borrar',
+                cancelButtonText: 'Cancelar',
+                text: 'Esta acción no se puede deshacer',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return this.remove(id)
+                }
+            }])
+        },
+        remove(id) {
+            return axios.delete(`/api/users/${id}`)
+                .then( res => {
+                    this.get()
+                    Swal.insertQueueStep({
+                        type: 'success',
+                        title: 'Borrado correctamente',
+                    })
+                })
+                .catch( err => {
+                    Swal.insertQueueStep({
+                        type: 'error',
+                        title: err.response.data.message,
+                    })
+                })
+        },
         get() {
             this.loading = true
             this.error = false

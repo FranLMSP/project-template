@@ -7,6 +7,8 @@ use App\Role;
 use App\MethodModuleUser;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+
 class UserController extends Controller
 {
     /**
@@ -221,6 +223,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if($user->id == Auth::id()) {
+            return response()->json([
+                'message' => 'No puede borrar su propio usuario'
+            ], 422);
+        }
+
         $user->delete();
 
         return response()->json([
