@@ -34,6 +34,52 @@
         <div id="sidebar" class="sidebar-fixed position-fixed">
             <a class="logo-wrapper"><img alt="" class="img-fluid" src=""/></a>
             <b-list-group class="list-group-flush">
+
+                <template v-for="module in modules" v-if="!module.api">
+
+                    <router-link
+                        v-if="module.childs.length == 0"
+                        :to="module.url"
+                        >
+                        <b-list-group-item :action="true">
+                            {{ module.name }}
+                        </b-list-group-item>
+                    </router-link>
+                    <b-list-group-item :action="true" v-else v-b-toggle="'collapse'+module.id">
+                        {{ module.name }}
+                        <b-collapse :id="'collapse'+module.id">
+                            <template v-for="child in module.childs" v-if="!child.api">
+                                <router-link
+                                    v-if="child.childs == 0"
+                                    :to="child.url"
+                                    >
+                                    <b-list-group-item :action="true">
+                                        {{ child.name }}
+                                    </b-list-group-item>
+                                </router-link>
+                                
+                                <b-list-group-item v-else v-b-toggle="'collapse'+module.id+'_'+child.id">
+                                    {{ child.name }}
+                                    <b-collapse :id="'collapse'+module.id+'_'+child.id">
+                                        <template v-for="grandchild in child.childs" v-if="!grandchild.api">
+                                            <router-link
+                                                :to="child.url"
+                                                >
+                                                <b-list-group-item :action="true">
+                                                    {{ grandchild.name }}
+                                                </b-list-group-item>
+                                            </router-link>
+                                            
+                                        </template>
+                                    </b-collapse>
+                                </b-list-group-item>
+
+                            </template>
+                        </b-collapse>
+                    </b-list-group-item>
+                </template>
+
+                <!--
                 <router-link to="/dashboard" @click.native="activeItem = 1">
                     <b-list-group-item :action="true" :class="activeItem === 1 && 'active'">Dashboard</b-list-group-item>
                 </router-link>
@@ -48,7 +94,7 @@
                 </router-link>
                 <router-link to="/404" @click.native="activeItem = 5">
                     <b-list-group-item :action="true" :class="activeItem === 5 && 'active'">404</b-list-group-item>
-                </router-link>
+                </router-link>-->
             </b-list-group>
         </div>
     </header>
@@ -65,9 +111,21 @@ export default {
     data() {
         return {
             activeItem: 1,
+            modules: [],
         }
     },
     methods: {
+        getModules() {
+            axios.get(`/api/modules/menu`)
+                .then( res => {
+                    this.modules = res.data.modules
+
+                    console.log(this.modules)
+                })
+                .catch( err => {
+                    alert('Ocurrió un error al listar los módulos')
+                })
+        },
         logout() {
             this.$store.commit('logout')
             this.$router.push('/login')
@@ -84,7 +142,7 @@ export default {
         }
     },
     created() {
-
+        this.getModules()
     }
 }
 

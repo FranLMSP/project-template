@@ -23,6 +23,7 @@ class ModuleController extends Controller
     {
         $modules = Module::where('active', true)
             ->where('api', false)
+            ->where('module_id', NULL)
             ->whereHas('childs', function($query) {
                 $query->where('api', false);
             })
