@@ -47,6 +47,7 @@
                     </router-link>
                     <b-list-group-item :action="true" v-else v-b-toggle="'collapse'+module.id">
                         {{ module.name }}
+                    </b-list-group-item>
                         <b-collapse :id="'collapse'+module.id">
                             <template v-for="child in module.childs" v-if="!child.api">
                                 <router-link
@@ -60,10 +61,11 @@
                                 
                                 <b-list-group-item v-else v-b-toggle="'collapse'+module.id+'_'+child.id">
                                     {{ child.name }}
+                                </b-list-group-item>
                                     <b-collapse :id="'collapse'+module.id+'_'+child.id">
                                         <template v-for="grandchild in child.childs" v-if="!grandchild.api">
                                             <router-link
-                                                :to="child.url"
+                                                :to="grandchild.url"
                                                 >
                                                 <b-list-group-item :action="true">
                                                     {{ grandchild.name }}
@@ -72,11 +74,9 @@
                                             
                                         </template>
                                     </b-collapse>
-                                </b-list-group-item>
 
                             </template>
                         </b-collapse>
-                    </b-list-group-item>
                 </template>
 
                 <!--
