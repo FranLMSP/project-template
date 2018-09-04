@@ -33,69 +33,73 @@
 
         <div id="sidebar" class="sidebar-fixed position-fixed">
             <a class="logo-wrapper"><img alt="" class="img-fluid" src=""/></a>
-            <b-list-group class="list-group-flush">
 
                 <template v-for="module in modules" v-if="!module.api">
+                    <b-card no-body>
+                        <b-card-header header-tag="header" class="p-0" role="tab">
+                            <router-link
+                                v-if="module.childs.length == 0"
+                                class="btn btn-block btn-secondary"
+                                :to="module.url"
+                            >
+                                {{ module.name }}
+                            </router-link>
+                            <b-btn
+                                v-else
+                                block
+                                v-b-toggle="'c'+module.id"
+                            >
+                                {{ module.name }}
+                            </b-btn>
+                        </b-card-header>
 
-                    <router-link
-                        v-if="module.childs.length == 0"
-                        :to="module.url"
-                        >
-                        <b-list-group-item :action="true">
-                            {{ module.name }}
-                        </b-list-group-item>
-                    </router-link>
-                    <b-list-group-item :action="true" v-else v-b-toggle="'collapse'+module.id">
-                        {{ module.name }}
-                    </b-list-group-item>
-                        <b-collapse :id="'collapse'+module.id">
-                            <template v-for="child in module.childs" v-if="!child.api">
-                                <router-link
-                                    v-if="child.childs == 0"
-                                    :to="child.url"
-                                    >
-                                    <b-list-group-item :action="true">
-                                        {{ child.name }}
-                                    </b-list-group-item>
-                                </router-link>
-                                
-                                <b-list-group-item v-else v-b-toggle="'collapse'+module.id+'_'+child.id">
-                                    {{ child.name }}
-                                </b-list-group-item>
-                                    <b-collapse :id="'collapse'+module.id+'_'+child.id">
-                                        <template v-for="grandchild in child.childs" v-if="!grandchild.api">
+                        <b-collapse :id="'c'+module.id" v-if="module.childs.length > 0">
+                            <b-card-body>
+                                <template v-for="child in module.childs" v-if="!child.api">
+                                    <b-card no-body>
+                                        <b-card-header header-tag="header" class="p-0" role="tab">
                                             <router-link
-                                                :to="grandchild.url"
-                                                >
-                                                <b-list-group-item :action="true">
-                                                    {{ grandchild.name }}
-                                                </b-list-group-item>
+                                                v-if="child.childs.length == 0"
+                                                class="btn btn-block btn-secondary"
+                                                :to="child.url"
+                                            >
+                                                {{ child.name }}
                                             </router-link>
-                                            
-                                        </template>
-                                    </b-collapse>
+                                            <b-btn
+                                                v-else
+                                                block
+                                                v-b-toggle="'c'+child.id"
+                                            >
+                                                {{ child.name }}
+                                            </b-btn>
+                                        </b-card-header>
 
-                            </template>
+                                        <b-collapse :id="'c'+child.id" v-if="child.childs.length > 0">
+                                            <b-card-body>
+                                                <template v-for="grandchild in child.childs" v-if="!grandchild.api">
+                                                    <b-card no-body>
+                                                        <b-card-header header-tag="header" class="p-0" role="tab">
+                                                            <router-link
+                                                                class="btn btn-block btn-secondary"
+                                                                :to="grandchild.url"
+                                                            >
+                                                                {{ grandchild.name }}
+                                                            </router-link>
+                                                        </b-card-header>
+
+                                                    </b-card>
+                                                </template>
+                                            </b-card-body>
+                                        </b-collapse>
+
+                                    </b-card>
+                                </template>
+                            </b-card-body>
                         </b-collapse>
+
+                    </b-card>
                 </template>
 
-                <!--
-                <router-link to="/dashboard" @click.native="activeItem = 1">
-                    <b-list-group-item :action="true" :class="activeItem === 1 && 'active'">Dashboard</b-list-group-item>
-                </router-link>
-                <router-link to="/usuarios" @click.native="activeItem = 2">
-                    <b-list-group-item :action="true" :class="activeItem === 2 && 'active'">Usuarios</b-list-group-item>
-                </router-link>
-                <router-link to="/tables"  @click.native="activeItem = 3">
-                    <b-list-group-item :action="true" :class="activeItem === 3 && 'active'">Tables</b-list-group-item>
-                </router-link>
-                <router-link to="/maps" @click.native="activeItem = 4">
-                    <b-list-group-item :action="true" :class="activeItem === 4 && 'active'">Maps</b-list-group-item>
-                </router-link>
-                <router-link to="/404" @click.native="activeItem = 5">
-                    <b-list-group-item :action="true" :class="activeItem === 5 && 'active'">404</b-list-group-item>
-                </router-link>-->
-            </b-list-group>
         </div>
     </header>
 </template>
