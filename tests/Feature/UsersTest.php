@@ -437,13 +437,13 @@ class UsersTest extends TestCase
     }
 
     /**
-     * Se pueden cambiar las contraseñas de los usuarios.
+     * Permisos de usuario se reasignan, pero solo si el campo "reset"
+     * está marcado.
      *
      * @test
      */
     public function user_permissions_can_be_reassigned()
     {
-        $this->withoutExceptionHandling();
         //Crear un rol para listarlo después
         $role = factory(Role::class)->create();
 
@@ -511,6 +511,134 @@ class UsersTest extends TestCase
 
         //Asegurarse de que no se hayan agregado permisos adicionales
         $this->assertTrue(MethodModuleUser::count() == 2);
+    }
+
+    /**
+     * Permisos de usuario NO reasignan si el campo "reset"
+     * es falso, nulo o no asignado.
+     *
+     * @test
+     */
+    public function user_permissions_not_change_if_reset_field_is_falsy()
+    {
+        //Crear un rol para listarlo después
+        $role = factory(Role::class)->create();
+
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'username' => 'admin',
+            'password' => bcrypt('123456'),
+            'role_id' => $role->id,
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        //Se asignan los permisos para interactuar con los modulos
+        $this->assignPermissions([
+            [
+                'user_id' => $user->id,
+                'url' => 'users/{user}',
+                'method' => 'PUT'
+            ]
+        ]);
+
+        //Se crea un nuevo rol para heredar los permisos
+        $newRole = factory(Role::class)->create();
+
+        //se crea un metodo y nuevos modulos
+        $newMethod = factory(Method::class)->create();
+        $newModule = factory(Module::class)->create();
+        $newModuleTwo = factory(Module::class)->create();
+
+        //Se le dan los permisos al rol
+        MethodModuleRole::insert([
+            [
+                'method_id' => $newMethod->id,
+                'module_id' => $newModule->id,
+                'role_id' => $newRole->id
+            ],
+            [
+                'method_id' => $newMethod->id,
+                'module_id' => $newModuleTwo->id,
+                'role_id' => $newRole->id
+            ],
+        ]);
+
+        //Se prueba que se listen correctamente los datos.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/users/'.$user->id, [
+            'username' => 'admin',
+            'email' => 'admin@root.com',
+            'role_id' => $newRole->id,
+            'reset' => false, //Campo opcional que indica si reiniciar los permisos o no
+        ])
+        ->assertStatus(200);
+
+        //Nos aseguramos de que se haya guardado bien en la base de datos
+        $this->assertDatabaseMissing('method_module_user', [
+            'method_id' => $newMethod->id,
+            'module_id' => $newModule->id,
+            'user_id' => $user->id,
+        ]);
+        $this->assertDatabaseMissing('method_module_user', [
+            'method_id' => $newMethod->id,
+            'module_id' => $newModuleTwo->id,
+            'user_id' => $user->id,
+        ]);
+
+        //Asegurarse de que no se hayan agregado permisos adicionales
+        $this->assertTrue(MethodModuleUser::count() == 1);
+
+
+        //Se repite la prueba.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/users/'.$user->id, [
+            'username' => 'admin',
+            'email' => 'admin@root.com',
+            'role_id' => $newRole->id,
+            'reset' => NULL, //Campo opcional que indica si reiniciar los permisos o no
+        ])
+        ->assertStatus(200);
+
+        //Nos aseguramos de que se haya guardado bien en la base de datos
+        $this->assertDatabaseMissing('method_module_user', [
+            'method_id' => $newMethod->id,
+            'module_id' => $newModule->id,
+            'user_id' => $user->id,
+        ]);
+        $this->assertDatabaseMissing('method_module_user', [
+            'method_id' => $newMethod->id,
+            'module_id' => $newModuleTwo->id,
+            'user_id' => $user->id,
+        ]);
+
+        //Asegurarse de que no se hayan agregado permisos adicionales
+        $this->assertTrue(MethodModuleUser::count() == 1);
+
+        //Se repite la prueba otra vez.
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/users/'.$user->id, [
+            'username' => 'admin',
+            'email' => 'admin@root.com',
+            'role_id' => $newRole->id,
+            //Esta vez no seteamos el "reset"
+        ])
+        ->assertStatus(200);
+
+        //Nos aseguramos de que se haya guardado bien en la base de datos
+        $this->assertDatabaseMissing('method_module_user', [
+            'method_id' => $newMethod->id,
+            'module_id' => $newModule->id,
+            'user_id' => $user->id,
+        ]);
+        $this->assertDatabaseMissing('method_module_user', [
+            'method_id' => $newMethod->id,
+            'module_id' => $newModuleTwo->id,
+            'user_id' => $user->id,
+        ]);
+
+        //Asegurarse de que no se hayan agregado permisos adicionales
+        $this->assertTrue(MethodModuleUser::count() == 1);
     }
 
     /**

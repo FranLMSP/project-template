@@ -204,13 +204,13 @@ class UserController extends Controller
         ]);
 
         $data = $request->all();
-        if(isset($data['password'])) {
+        if(isset($data['password']) && $data['password']) {
             $data['password'] = bcrypt($data['password']);
         } else {
             unset($data['password']);
         }
 
-        $reset = isset($data['reset']);
+        $reset = isset($data['reset']) && $data['reset'];
         unset($data['reset']);
 
         $user->update($data);
