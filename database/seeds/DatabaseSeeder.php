@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             MethodsTableSeeder::class,
             ModulesTableSeeder::class,
             UsersPermissionsSeeder::class,
+            RolesPermissionsSeeder::class,
         ]);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

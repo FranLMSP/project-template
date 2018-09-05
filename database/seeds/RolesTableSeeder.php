@@ -15,6 +15,7 @@ class RolesTableSeeder extends Seeder
     {
         Role::truncate();
 
+        //IMPORTANTE: Rol administrador siempre va a tener ID 1
         factory(Role::class)->create([
             'id' => 1,
             'name' => 'Administrador',
