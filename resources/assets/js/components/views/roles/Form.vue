@@ -9,7 +9,7 @@
             <div v-show="!loading && !error">
                 <b-form @submit.prevent="save">
                     <b-form-row class="mb-1">
-                        <b-col md="6" sm="12">
+                        <b-col>
                             <b-input-group>
                                 <b-input-group-prepend is-text>
                                   <fa :icon="icons.user"/>
@@ -34,6 +34,8 @@
 
                             </b-input-group>
                         </b-col>
+                    </b-form-row>
+                    <b-form-row>
                         <b-col class="mt-sm-1 mt-md-0">
                             <b-input-group>
 
