@@ -8,6 +8,7 @@ use App\MethodModuleUser;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -183,7 +184,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,'.$user->id,
             'password' => 'nullable|min:8',
             'repeatPassword' => 'same:password',
-            'role_id' => 'required|exists:roles,id'
+            'role_id' => 'required|exists:roles,id',
+            'reset' => 'nullable',
         ], [
             'username.required' => 'Debe especificar el nombre de usuario',
             'username.unique' => 'El nombre de usuario ya está en uso',
@@ -202,13 +204,34 @@ class UserController extends Controller
         ]);
 
         $data = $request->all();
-        if($data['password']) {
+        if(isset($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         } else {
             unset($data['password']);
         }
 
+        $reset = isset($data['reset']);
+        unset($data['reset']);
+
         $user->update($data);
+
+        if($reset) {
+            MethodModuleUser::where('user_id', $user->id)->delete();
+            //obtener rol para heredar sus permisos
+            $role = Role::with(['permissions'])->find($request->role_id);
+        
+            $data = [];
+            foreach($role->permissions as $permission) {
+                $data[] = [
+                    'method_id' => $permission->method_id,
+                    'module_id' => $permission->module_id,
+                    'user_id' => $user->id,
+                ];
+            }
+
+            MethodModuleUser::insert($data);
+
+        }
 
         return response()->json([
             'message' => 'Usuario actualizado correctamente'
