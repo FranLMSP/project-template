@@ -35,6 +35,7 @@
                                 <th>ID</th>
                                 <th>Nombre de usuario</th>
                                 <th>Correo</th>
+                                <th>Rol</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -44,6 +45,7 @@
                                     <td><span>{{ user.id }}</span></td>
                                     <td><span>{{ user.username }}</span></td>
                                     <td><span>{{ user.email }}</span></td>
+                                    <td><span>{{ user.role.name }}</span></td>
                                     <td>
                                         <router-link
                                             :to="{name: 'user-permissions-edit', params: {id: user.id}}"
@@ -80,6 +82,7 @@
                                 <th>ID</th>
                                 <th>Nombre de usuario</th>
                                 <th>Correo</th>
+                                <th>Rol</th>
                                 <th>Acciones</th>
                             </tr>
                         </tfoot>
