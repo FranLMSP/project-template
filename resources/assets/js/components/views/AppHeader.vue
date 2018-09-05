@@ -11,8 +11,11 @@
             <b-collapse is-nav id="nav_collapse">
 
                 <b-navbar-nav class="navMenu">
-                    <b-nav-item href="#">Link</b-nav-item>
-                    <b-nav-item href="#" disabled>Disabled</b-nav-item>
+                    <template v-for="module in modules" v-if="!module.api">
+
+                        <nav-menu :module="module"></nav-menu>
+
+                    </template>
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
@@ -46,11 +49,13 @@
 
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import HeaderMenu from './HeaderMenu.vue'
+import NavMenu from './NavMenu.vue'
 
 export default {
     name: 'app-header',
     components: {
-        HeaderMenu
+        HeaderMenu,
+        NavMenu
     },
     data() {
         return {
