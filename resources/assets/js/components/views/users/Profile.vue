@@ -3,6 +3,9 @@
         <b-row>
             <b-col sm="12" md="3" class="text-center">
                 <fa class="align-middle" :icon="icons.user" size="10x" />
+                <br>
+                <h4>¡Bienvenido <strong>{{ currentUser.username }}</strong>!</h4>
+                <p><strong>{{ user.role.name }}: </strong>{{ user.role.description }}</p>
             </b-col>
             <b-col>
                 <b-row>
@@ -21,7 +24,7 @@
                     </b-col>
                 </b-row>
 
-                <b-form @submit.prevent="save">
+                <b-form @submit.prevent="savePrompt">
                     <b-form-row class="mb-1">
                         <b-col md="6" sm="12">
                             <b-form-group label="Nombre de usuario">
@@ -142,6 +145,19 @@
                             </b-form-group>
                         </b-col>
                     </b-form-row>
+
+                    <b-form-row>
+                        <b-col>
+                            <b-button
+                                type="submit"
+                                class="float-right"
+                                v-show="!selected.length == 0"
+                                :disabled="sending"
+                                variant="primary">
+                                <fa :icon="icons.save"/> Guardar
+                            </b-button>
+                        </b-col>
+                    </b-form-row>
                 </b-form>
             </b-col>
         </b-row>
@@ -172,6 +188,8 @@ export default {
                 password: '',
                 repeatPassword: ''
             },
+            error: false,
+            sending: false,
             formErrors: {},
             selected: [], // Must be an array reference!
             options: [{text: 'Editar', value: true}]
@@ -196,6 +214,9 @@ export default {
             axios.get(`/api/profile`)
                 .then( res => {
                     this.user = res.data.me
+
+                    this.form.username = res.data.me.username
+                    this.form.email = res.data.me.email
                 })
                 .catch( err => {
                     alert('Ocurrió un error')
@@ -203,7 +224,46 @@ export default {
                 .then( () => {
 
                 })
-        }
+        },
+        save() {
+            this.sending = true
+            this.error = false
+
+            axios.put(`/api/profile`, this.form)
+                .then( res => {
+
+                    Swal({
+                        type: 'success',
+                        title: res.data.message,
+                        text: 'Su sesión será cerrada',
+                        preConfirm:() => {
+                            this.$store.commit('logout')
+                            this.$router.push('/login')
+                        }
+                    })
+                })
+                .catch( err => {
+                    this.error = true
+                    this.formErrors = err.response.data.errors
+                })
+                .then( () => {
+                    this.sending = false
+                })
+        },
+        savePrompt() {
+            Swal.queue([{
+                title: '¿Actualizar usuario?',
+                showCancelButton: true,
+                type: 'warning',
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar',
+                text: 'Su sesión será cerrada al aplicar los cambios',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return this.save()
+                }
+            }])
+        },
     },
     computed: {
         currentUser() {
@@ -222,7 +282,9 @@ export default {
         }
     },
     created() {
-        
+        this.form.username = this.currentUser.username
+        this.form.email = this.currentUser.email
+        this.get()
     }
 }
 
