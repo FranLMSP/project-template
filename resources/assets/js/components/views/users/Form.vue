@@ -123,6 +123,16 @@
                                     {{ formErrors.role_id[0] }}
                             </div>
                         </b-col>
+                        <b-col sm="3" v-if="$route.meta.mode == 'edit'">
+                                <b-form-checkbox
+                                    id="reset"
+                                    v-model="form.reset" 
+                                    :value="true"
+                                    :unchecked-value="false"
+                                >
+                                    Reiniciar permisos
+                                </b-form-checkbox>
+                        </b-col>
                     </b-form-row>
                 </b-form>
                 <br>
@@ -159,6 +169,7 @@ export default {
                 password: '',
                 role_id: null,
                 repeatPassword: '',
+                reset:false,
             },
             formErrors: {},
             roles: [],

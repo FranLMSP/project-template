@@ -68,8 +68,6 @@ export default {
             axios.get(`/api/modules/menu`)
                 .then( res => {
                     this.modules = res.data.modules
-
-                    console.log(this.modules)
                 })
                 .catch( err => {
                     alert('Ocurrió un error al listar los módulos')
