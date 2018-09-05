@@ -11,11 +11,11 @@
                 <b-card>
                     <b-row>
                         <b-col>
-                            <h2>Usuarios</h2>
+                            <h2>Roles</h2>
                         </b-col>
                         <b-col>
-                            <router-link v-b-modal.form-modal class="btn btn-primary float-right" :to="{name: 'user-create'}">
-                                <fa :icon="icons.plus"/> Crear usuario
+                            <router-link v-b-modal.form-modal class="btn btn-primary float-right" :to="{name: 'role-create'}">
+                                <fa :icon="icons.plus"/> Crear rol
                             </router-link>
                         </b-col>
                     </b-row>
@@ -28,25 +28,24 @@
         <b-row>
             <b-col>
                 <b-card>
-                    <label><strong style="color: red">Rojo: </strong> Usuario actual</label>
                     <table class="table table-striped table-bordered table-outlined table-hover text-center">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nombre de usuario</th>
-                                <th>Correo</th>
+                                <th>Nombre del rol</th>
+                                <th>Descripción</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template v-if="!loading && !error">
-                                <tr v-for="user in users" :class="{redRow: isUser(user)}" >
-                                    <td><span>{{ user.id }}</span></td>
-                                    <td><span>{{ user.username }}</span></td>
-                                    <td><span>{{ user.email }}</span></td>
+                                <tr v-for="role in roles" >
+                                    <td><span>{{ role.id }}</span></td>
+                                    <td><span>{{ role.name }}</span></td>
+                                    <td><span>{{ role.description }}</span></td>
                                     <td>
                                         <router-link
-                                            :to="{name: 'user-permissions-edit', params: {id: user.id}}"
+                                            :to="{name: 'role-permissions-edit', params: {id: role.id}}"
                                             class="btn btn-sm btn-success"
                                             v-b-tooltip.hover
                                             v-b-modal.form-modal
@@ -54,14 +53,14 @@
                                             <fa :icon="icons.key"/>
                                         </router-link>
                                         <router-link
-                                            :to="{name: 'user-edit', params: {id: user.id}}"
+                                            :to="{name: 'role-edit', params: {id: role.id}}"
                                             class="btn btn-sm btn-primary"
                                             v-b-tooltip.hover
                                             v-b-modal.form-modal
                                             title="Editar">
                                             <fa :icon="icons.edit"/>
                                         </router-link>
-                                        <b-button v-if="user.id != currentUser.id" @click="deletePrompt(user.id)" size="sm" variant="danger" v-b-tooltip.hover title="Eliminar">
+                                        <b-button @click="deletePrompt(role.id)" size="sm" variant="danger" v-b-tooltip.hover title="Eliminar">
                                             <fa :icon="icons.trash"/>
                                         </b-button>
                                     </td>
@@ -78,8 +77,8 @@
                         <tfoot>
                             <tr>
                                 <th>ID</th>
-                                <th>Nombre de usuario</th>
-                                <th>Correo</th>
+                                <th>Nombre del rol</th>
+                                <th>Descripción</th>
                                 <th>Acciones</th>
                             </tr>
                         </tfoot>
@@ -102,16 +101,16 @@
 
 import { faKey, faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
-import UsersForm from './Form.vue'
+import RolesForm from './Form.vue'
 
 export default {
-    name: 'users-list',
+    name: 'roles-list',
     components: {
-        UsersForm
+        RolesForm
     },
     data() {
         return {
-            users: [],
+            roles: [],
             loading: false,
             error: false,
             modalShow: false,
@@ -128,7 +127,7 @@ export default {
     methods: {
         deletePrompt(id) {
             Swal.queue([{
-                title: '¿Borrar usuario?',
+                title: '¿Borrar rol?',
                 showCancelButton: true,
                 type: 'warning',
                 confirmButtonText: 'Sí, borrar',
@@ -141,7 +140,7 @@ export default {
             }])
         },
         remove(id) {
-            return axios.delete(`/api/users/${id}`)
+            return axios.delete(`/api/roles/${id}`)
                 .then( res => {
                     this.get()
                     Swal.insertQueueStep({
@@ -162,9 +161,9 @@ export default {
 
             this.pagination.current_page = page
 
-            axios.get('/api/users?page='+this.pagination.current_page)
+            axios.get('/api/roles?page='+this.pagination.current_page)
                 .then( res => {
-                    this.users = res.data.users
+                    this.roles = res.data.roles
                     this.pagination = res.data.pagination
                 })
                 .catch( err => {
@@ -174,9 +173,6 @@ export default {
                     this.loading = false
                 })
         },
-        isUser(user) {
-            return user.id == this.currentUser.id
-        },
         showModal (id) {
             this.$root.$emit('bv::show::modal', id)
         },
@@ -185,9 +181,6 @@ export default {
         },
     },
     computed: {
-        currentUser() {
-            return this.$store.getters.currentUser
-        },
         tableMessage() {
             return this.error ? 'Ocurrió un error al obtener los datos' : 'Cargando...'
         },
