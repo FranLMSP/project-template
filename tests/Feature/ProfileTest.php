@@ -10,6 +10,8 @@ use App\User;
 
 class ProfileTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * Usuario puede ver su perfil.
      *
@@ -44,7 +46,39 @@ class ProfileTest extends TestCase
                     'created_at' => (string)$user->role->created_at,
                     'updated_at' => (string)$user->role->updated_at,
                 ]
-            ];
+            ]
+        ]);
+    }
+
+    /**
+     * Usuario puede actualizar su perfil.
+     *
+     * @test
+     */
+    public function user_can_update_his_own_profile()
+    {
+        //Se crea un usuario
+        $user = factory(User::class)->create([
+            'id' => 1,
+            'username' => 'admin',
+            'password' => bcrypt('123456')
+        ]);
+        //Obtenemos su token para la sesion
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
+
+        $this->withHeaders(["Authorization" => 'Bearer '.$token])
+        ->put('/api/profile', [
+            'username' => 'new',
+            'email' => 'a@a.com',
+            'password' => '12345678',
+            'repeatPassword' => '12345678',
+        ])
+        ->assertStatus(200);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'username' => 'new',
+            'email' => 'a@a.com',
         ]);
     }
 }

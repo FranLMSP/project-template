@@ -144,6 +144,21 @@ class UserController extends Controller
     }
 
     /**
+     * Mostrar usuario actual
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function me()
+    {
+        $user = User::with('role')->find(Auth::id());
+
+        return response()->json([
+            'me' => $user
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\User  $user
@@ -232,6 +247,51 @@ class UserController extends Controller
             MethodModuleUser::insert($data);
 
         }
+
+        return response()->json([
+            'message' => 'Usuario actualizado correctamente'
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updateMe(Request $request)
+    {
+        $user = User::find(Auth::id());
+
+        $request->validate([
+            'username' => 'required|unique:users,username,'.$user->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'password' => 'nullable|min:8',
+            'repeatPassword' => 'same:password',
+        ], [
+            'username.required' => 'Debe especificar el nombre de usuario',
+            'username.unique' => 'El nombre de usuario ya está en uso',
+
+            'email.required' => 'Debe especificar el email',
+            'email.unique' => 'El email ya está en uso',
+            'email.email' => 'El email no es válido',
+
+            'password.required' => 'Debe especificar la contraseña',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
+
+            'repeatPassword.same' => 'Las contraseñas no coinciden',
+
+        ]);
+
+        $data = $request->all();
+        if(isset($data['password']) && $data['password']) {
+            $data['password'] = bcrypt($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        $user->update($data);
 
         return response()->json([
             'message' => 'Usuario actualizado correctamente'
