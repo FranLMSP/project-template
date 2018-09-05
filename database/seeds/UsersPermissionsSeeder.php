@@ -20,6 +20,7 @@ class UsersPermissionsSeeder extends Seeder
 
     private function autoInsertPermissions()
     {
+        //Insertar permisos API
         $modules = Module::where('api', true)->get();
         $methods = Method::get();
 
@@ -43,6 +44,19 @@ class UsersPermissionsSeeder extends Seeder
 
                 }
             }
+        }
+
+        //Insertar permisos FRONT
+        $modules = Module::where('api', false)->get();
+
+        foreach($modules as $module) {
+
+            factory(MethodModuleUser::class)->create([
+                'method_id' => $this->findMethod($methods, 'GET')->id,
+                'module_id' => $module->id,
+                'user_id' => 1,
+            ]);
+
         }
     }
 
