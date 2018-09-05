@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
@@ -121,7 +124,7 @@ class RoleController extends Controller
         $role->update($request->all());
 
         return response()->json([
-            'role' => $role
+            'message' => 'Rol actualizado correctamente'
         ]);
     }
 
@@ -133,6 +136,13 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        $user = User::find(Auth::id());
+        if($role->id == $user->role_id) {
+            return response()->json([
+                'message' => 'No puede borrar su propio rol'
+            ], 422);
+        }
+
         $role->delete();
 
         return response()->json([
