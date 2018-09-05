@@ -1,8 +1,8 @@
 <template>
     <b-card>
         <b-row>
-            <b-col sm="12" md="3" class="text-center">
-                <fa class="align-middle" :icon="icons.user" size="10x" />
+            <b-col sm="12" md="3" class="text-center justify-content-center align-self-center">
+                <fa :icon="icons.user" size="10x" />
                 <br>
                 <h4>¡Bienvenido <strong>{{ currentUser.username }}</strong>!</h4>
                 <p><strong>{{ user.role.name }}: </strong>{{ user.role.description }}</p>
