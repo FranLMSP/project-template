@@ -1,12 +1,11 @@
 <template>
 
-    <b-dropdown-item v-if="!module.api && module.childs.length == 0">
-        <router-link 
-            :to="module.url"
-            v-if="module.childs.length == 0">
-            {{ module.name }}
-        </router-link>
-    </b-dropdown-item>
+    <router-link
+        class="dropdown-item" 
+        :to="module.url"
+        v-if="!module.api && module.childs.length == 0">
+        {{ module.name }}
+    </router-link>
 
     <b-nav-item-dropdown v-else-if="module.module_id === null" right>
         <template slot="button-content" v-if="!module.api">

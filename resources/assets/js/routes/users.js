@@ -15,13 +15,17 @@ export default {
         {
             path: '/',
             component: List,
+            meta: {
+                title: 'Usuarios'
+            },
             children: [
                 {
                     path: 'crear',
                     name: 'user-create',
                     component: Form,
                     meta: {
-                        mode: 'create'
+                        mode: 'create',
+                        title: 'Usuarios'
                     }
                 },
                 {
@@ -29,7 +33,8 @@ export default {
                     name: 'user-edit',
                     component: Form,
                     meta: {
-                        mode: 'edit'
+                        mode: 'edit',
+                        title: 'Usuarios'
                     }
                 },
                 {
@@ -37,7 +42,8 @@ export default {
                     name: 'user-permissions-edit',
                     component: Permissions,
                     meta: {
-                        mode: 'edit'
+                        mode: 'edit',
+                        title: 'Usuarios'
                     }
                 },
 

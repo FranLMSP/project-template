@@ -15,13 +15,17 @@ export default {
         {
             path: '/',
             component: List,
+            meta: {
+                title: 'Roles'
+            },
             children: [
                 {
                     path: 'crear',
                     name: 'role-create',
                     component: Form,
                     meta: {
-                        mode: 'create'
+                        mode: 'create',
+                        title: 'Roles'
                     }
                 },
                 {
@@ -29,7 +33,8 @@ export default {
                     name: 'role-edit',
                     component: Form,
                     meta: {
-                        mode: 'edit'
+                        mode: 'edit',
+                        title: 'Roles'
                     }
                 },
                 {
@@ -37,7 +42,8 @@ export default {
                     name: 'role-permissions-edit',
                     component: Permissions,
                     meta: {
-                        mode: 'edit'
+                        mode: 'edit',
+                        title: 'Roles'
                     }
                 },
 

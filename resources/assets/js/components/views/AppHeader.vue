@@ -6,7 +6,7 @@
 
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-            <b-navbar-brand href="#">NavBar</b-navbar-brand>
+            <b-navbar-brand href="#">{{ title }}</b-navbar-brand>
 
             <b-collapse is-nav id="nav_collapse">
 
@@ -26,7 +26,9 @@
                         <template slot="button-content">
                             <em>{{ currentUser.username }}</em>
                         </template>
-                        <b-dropdown-item>Perfil</b-dropdown-item>
+                        <router-link class="dropdown-item" to="/perfil">
+                            Perfil
+                        </router-link>
                         <b-dropdown-item @click="logout">
                             <fa :icon="icons.powerOff"/> Cerrar sesión
                         </b-dropdown-item>
@@ -86,6 +88,10 @@ export default {
         },
         currentUser() {
             return this.$store.getters.currentUser
+        },
+        title() {
+            console.log(this.$route.meta)
+            return this.$route.meta.title
         }
     },
     created() {
