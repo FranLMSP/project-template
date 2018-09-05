@@ -35,6 +35,10 @@ Route::group([
     //Obtener mis módulos
     Route::get('modules/menu', 'ModuleController@menu');
 
+    //Perfil
+    Route::get('profile', 'UserController@me');
+    Route::put('profile', 'UserController@updateMe');
+
     //Todas las rutas que van a estar protegidas por permisos
     Route::group([
         'middleware' => CheckPermission::class
