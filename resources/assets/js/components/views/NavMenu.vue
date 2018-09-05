@@ -26,7 +26,7 @@
             </b-btn>
         </b-card-header>
 
-        <b-collapse v-if="module.childs.length > 0" visible>
+        <b-collapse :id="'c'+module.id" v-if="module.childs.length > 0" visible>
             <b-card-body>
                 <template v-for="child in module.childs" v-if="!child.api">
                     <nav-menu :module="child"></nav-menu>

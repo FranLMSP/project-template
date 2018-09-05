@@ -140,6 +140,12 @@ main {
     border-radius: 5px;
 }
 
+@media(min-width: 768px) {
+     .navMenu {
+        display: none;
+     }
+}
+
 @media (max-width: 768px) {
     .sidebar-fixed {
         display: none;
