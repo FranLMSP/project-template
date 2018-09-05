@@ -21,7 +21,10 @@ export const routes = [
         children: [
             {
                 path: 'perfil',
-                component: Profile
+                component: Profile,
+                meta: {
+                    title: 'Perfil'
+                }
             },
             UsersRoutes,
             RolesRoutes,
