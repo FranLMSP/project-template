@@ -71,7 +71,7 @@
                             </template>
                             <template v-else>
                                 <tr>
-                                    <td colspan="4">
+                                    <td colspan="5">
                                         {{ tableMessage }}
                                     </td>
                                 </tr>
