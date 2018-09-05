@@ -38,7 +38,6 @@ export default {
     props: [ 'active', 'module' ],
     name: 'header-menu',
     created() {
-        console.log(this.module)
     }
 }
 
