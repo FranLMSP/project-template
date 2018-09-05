@@ -261,13 +261,15 @@ class RolesTest extends TestCase
             ]
         ]);
 
+        $anotherRole = factory(Role::class)->create();
+
         $this->withHeaders(["Authorization" => 'Bearer '.$token])
-        ->delete('/api/roles/'.$role->id)
+        ->delete('/api/roles/'.$anotherRole->id)
         ->assertStatus(200);
 
         //Confirmar que esté borrado
         $this->assertDatabaseMissing('roles', [
-            'id' => $role->id
+            'id' => $anotherRole->id
         ]);
     }
 
