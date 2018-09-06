@@ -4,13 +4,14 @@
         <b-card-header @click="selectModule(module)" header-tag="header" class="p-0" role="tab">
             <router-link
                 v-if="module.childs.length == 0"
-                class="btn btn-block"
+                class="btn btn-block text-left"
                 :class="{'btn-primary': isSelected}"
                 :to="module.url"
             >
                 {{ module.name }}
             </router-link>
             <b-btn
+                class="text-left"
                 v-else
                 block
                 v-b-toggle="'c'+module.id"
@@ -24,7 +25,7 @@
             :id="'c'+module.id"
             v-if="module.childs.length > 0"
         >
-            <b-card-body>
+            <b-card-body class="p-0 pl-4">
                 <template v-for="child in module.childs" v-if="!child.api">
                     <header-menu :selected="selected" :module="child">
                     </header-menu>
