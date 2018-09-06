@@ -44,7 +44,7 @@
             </b-collapse>
         </b-navbar>
 
-        <div id="sidebar" class="sidebar-fixed position-fixed">
+        <div id="sidebar" class="sidebar-fixed position-fixed p-0">
             <a class="logo-wrapper"><img alt="" class="img-fluid" src=""/></a>
             <template v-for="module in modules" v-if="!module.api">
                 <header-menu :selected="selected" :module="module" ></header-menu>
