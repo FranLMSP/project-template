@@ -8,7 +8,7 @@
                 :class="{'btn-primary': isSelected}"
                 :to="module.url"
             >
-                {{ module.name }}
+                <fa :icon="icons[module.icon]" /> {{ module.name }}
             </router-link>
             <b-btn
                 class="text-left"
@@ -16,7 +16,7 @@
                 block
                 v-b-toggle="'c'+module.id"
             >
-                {{ module.name }}
+                <fa :icon="icons[module.icon]" /> {{ module.name }}
             </b-btn>
         </b-card-header>
 
@@ -40,6 +40,8 @@
 
 <script type="text/javascript">
     
+import {faCog} from '@fortawesome/free-solid-svg-icons'
+
 export default {
     props: [ 'selected', 'module' ],
     name: 'header-menu',
@@ -79,6 +81,11 @@ export default {
         isSelected() {
             //alert(this.selected.id)
             return this.selected.id == this.module.id
+        },
+        icons() {
+            return {
+                cog: faCog
+            }
         }
     },
     created() {
