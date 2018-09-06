@@ -73,8 +73,11 @@ export default {
             axios.get(`/api/modules/menu`)
                 .then( res => {
                     this.modules = res.data.modules
+
+                    this.findSelected(res.data.modules)
                 })
                 .catch( err => {
+                    console.log(err)
                     alert('Ocurrió un error al listar los módulos')
                 })
         },
@@ -82,6 +85,18 @@ export default {
             this.$store.commit('logout')
             this.$router.push('/login')
         },
+        findSelected(modules) {
+            for(let i=0; i<modules.length; i++) {
+                if(modules[i].childs.length == 0) {
+                    if(this.$route.fullPath.indexOf(modules[i].url) !== -1 && !modules[i].api) {
+                        this.selected.id = modules[i].id
+                        return true
+                    }
+                } else {
+                    this.findSelected(modules[i].childs)
+                }
+            }
+        }
     },
     computed: {
         icons() {
@@ -93,16 +108,11 @@ export default {
             return this.$store.getters.currentUser
         },
         title() {
-            console.log(this.$route.meta)
             return this.$route.meta.title
         }
     },
     created() {
         this.getModules()
-
-        this.$root.$on('selectModule', module => {
-            this.selected = module
-        })
     }
 }
 

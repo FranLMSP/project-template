@@ -5,7 +5,7 @@
             <router-link
                 v-if="module.childs.length == 0"
                 class="btn btn-block"
-                :class="{'btn-primary': isSelected(module)}"
+                :class="{'btn-primary': isSelected}"
                 :to="module.url"
             >
                 {{ module.name }}
@@ -20,7 +20,7 @@
         </b-card-header>
 
         <b-collapse
-            :visible="isChildSelected(module)"
+            :visible="isChildSelected"
             :id="'c'+module.id"
             v-if="module.childs.length > 0"
         >
@@ -42,21 +42,46 @@
 export default {
     props: [ 'selected', 'module' ],
     name: 'header-menu',
+    data() {
+        return {
+            created: false
+        }
+    },
     methods: {
-        selectModule(module) {
-            if(module.childs.length == 0) {
-                this.$root.$emit('selectModule', module)
+        selectModule() {
+            if(this.module.childs.length == 0) {
+                this.selected.id = this.module.id
             }
         },
-        isSelected(module) {
-            return this.selected.id == module.id
+        selectCollapse() {
+            this.module.open = !this.module.open
         },
-        isChildSelected(module) {
+        findChildSelected(module) {
+            if(module.childs.length == 0) {
+                return module.id == this.selected.id
+            } else {
+                let selected = false
+                for(let i=0; i<module.childs.length; i++) {
+                    if(this.findChildSelected(module.childs[i])) {
+                        selected = true
+                    }
+                }
+                return selected
+            }
             return false
         }
     },
+    computed: {
+        isChildSelected() {
+            return this.module.open
+        },
+        isSelected() {
+            //alert(this.selected.id)
+            return this.selected.id == this.module.id
+        }
+    },
     created() {
-
+        this.module.open = this.findChildSelected(this.module)
     }
 }
 
