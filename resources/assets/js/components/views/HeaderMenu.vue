@@ -3,6 +3,7 @@
     <b-card no-body>
         <b-card-header @click="selectModule(module)" header-tag="header" class="p-0" role="tab">
             <router-link
+                v-b-toggle="'nav_collapse'"
                 v-if="module.childs.length == 0"
                 class="btn btn-block text-left"
                 :class="{'btn-primary': isSelected}"
