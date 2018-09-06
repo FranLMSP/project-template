@@ -12,6 +12,10 @@
             </router-link>
             <b-btn
                 class="text-left"
+                :class="{
+                    'btn-dark': isChildSelected,
+                    'btn-secondary': !isChildSelected
+                }"
                 v-else
                 block
                 v-b-toggle="'c'+module.id"
@@ -21,7 +25,7 @@
         </b-card-header>
 
         <b-collapse
-            :visible="isChildSelected"
+            :visible="module.open"
             :id="'c'+module.id"
             v-if="module.childs.length > 0"
         >
@@ -76,7 +80,7 @@ export default {
     },
     computed: {
         isChildSelected() {
-            return this.module.open
+            return this.findChildSelected(this.module)
         },
         isSelected() {
             //alert(this.selected.id)
