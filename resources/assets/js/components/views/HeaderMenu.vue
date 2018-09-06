@@ -49,11 +49,6 @@ import {faCog} from '@fortawesome/free-solid-svg-icons'
 export default {
     props: [ 'selected', 'module' ],
     name: 'header-menu',
-    data() {
-        return {
-            created: false
-        }
-    },
     methods: {
         selectModule() {
             if(this.module.childs.length == 0) {
@@ -99,7 +94,7 @@ export default {
 
 </script>
 
-<style type="text/css">
+<style type="text/css" scoped>
 .active {
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
     border-radius: 5px;

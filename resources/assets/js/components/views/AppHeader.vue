@@ -11,11 +11,17 @@
             <b-collapse is-nav id="nav_collapse">
 
                 <b-navbar-nav class="navMenu">
-                    <template v-for="module in modules" v-if="!module.api">
-
-                        <nav-menu :module="module"></nav-menu>
-
-                    </template>
+                    <b-nav-item-dropdown right>
+                        <template slot="button-content">
+                            <em>
+                                Menú
+                            </em>
+                        </template>
+                        <template v-for="module in modules" v-if="!module.api">
+                            <header-menu :selected="selected" :module="module"></header-menu>
+                        </template>
+                        
+                    </b-nav-item-dropdown>
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
@@ -51,13 +57,11 @@
 
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import HeaderMenu from './HeaderMenu.vue'
-import NavMenu from './NavMenu.vue'
 
 export default {
     name: 'app-header',
     components: {
         HeaderMenu,
-        NavMenu
     },
     data() {
         return {
