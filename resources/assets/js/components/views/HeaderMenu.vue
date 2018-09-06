@@ -1,12 +1,11 @@
 <template>
 
     <b-card no-body>
-        <b-card-header header-tag="header" class="p-0" role="tab">
+        <b-card-header @click="selectModule(module)" header-tag="header" class="p-0" role="tab">
             <router-link
-
                 v-if="module.childs.length == 0"
                 class="btn btn-block"
-                :class="{'btn-primary': linkActive(module)}"
+                :class="{'btn-primary': isSelected(module)}"
                 :to="module.url"
             >
                 {{ module.name }}
@@ -20,10 +19,14 @@
             </b-btn>
         </b-card-header>
 
-        <b-collapse :id="'c'+module.id" v-if="module.childs.length > 0">
+        <b-collapse
+            :visible="isChildSelected(module)"
+            :id="'c'+module.id"
+            v-if="module.childs.length > 0"
+        >
             <b-card-body>
                 <template v-for="child in module.childs" v-if="!child.api">
-                    <header-menu :module="child">
+                    <header-menu :selected="selected" :module="child">
                     </header-menu>
                 </template>
             </b-card-body>
@@ -37,14 +40,23 @@
 <script type="text/javascript">
     
 export default {
-    props: [ 'active', 'module' ],
+    props: [ 'selected', 'module' ],
     name: 'header-menu',
     methods: {
-        linkActive(module) {
-            return module.url == this.$route.path
+        selectModule(module) {
+            if(module.childs.length == 0) {
+                this.$root.$emit('selectModule', module)
+            }
+        },
+        isSelected(module) {
+            return this.selected.id == module.id
+        },
+        isChildSelected(module) {
+            return false
         }
     },
     created() {
+
     }
 }
 

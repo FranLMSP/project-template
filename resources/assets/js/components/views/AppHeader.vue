@@ -41,7 +41,7 @@
         <div id="sidebar" class="sidebar-fixed position-fixed">
             <a class="logo-wrapper"><img alt="" class="img-fluid" src=""/></a>
             <template v-for="module in modules" v-if="!module.api">
-                <header-menu :module="module" ></header-menu>
+                <header-menu :selected="selected" :module="module" ></header-menu>
             </template>
         </div>
     </header>
@@ -63,6 +63,9 @@ export default {
         return {
             activeItem: 1,
             modules: [],
+            selected: {
+                id: 0,
+            }
         }
     },
     methods: {
@@ -96,6 +99,10 @@ export default {
     },
     created() {
         this.getModules()
+
+        this.$root.$on('selectModule', module => {
+            this.selected = module
+        })
     }
 }
 
