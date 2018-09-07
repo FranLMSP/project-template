@@ -68,6 +68,6 @@ Route::group([
     });
 
     //Esta ruta es usada para probar la sesión
-    Route::get('protected', 'AuthController@test');
+    Route::get('protected', 'TestController@test');
 
 });
