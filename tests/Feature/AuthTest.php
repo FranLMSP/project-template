@@ -73,6 +73,7 @@ class AuthTest extends TestCase
      */
     public function a_user_can_logout()
     {
+        $this->withoutExceptionHandling();
         //Se crea un usuario
         factory(User::class)->create([
             'username' => 'admin',

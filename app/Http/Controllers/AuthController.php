@@ -86,4 +86,11 @@ class AuthController extends Controller
     {
         return Auth::guard('api');
     }
+
+    public function test()
+    {
+        return response()->json([
+            'message' => '¡Bienvenido!'
+        ]);
+    }
 }
