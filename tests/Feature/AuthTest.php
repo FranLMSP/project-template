@@ -73,11 +73,13 @@ class AuthTest extends TestCase
      */
     public function a_user_can_logout()
     {
+        //$this->withoutExceptionHandling();
         //Se crea un usuario
-        factory(User::class)->create([
+        $user = factory(User::class)->create([
             'username' => 'admin',
             'password' => bcrypt('123456')
         ]);
+        $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
 
         //Inicia sesión
         $this->post('/api/auth/login', [
@@ -86,6 +88,7 @@ class AuthTest extends TestCase
         ]);
 
         //Solicita cerrar sesión
+        //$this->withHeaders(["Authorization" => 'Bearer '.$token.'a'])
         $this->post('/api/auth/logout')
             //Finaliza correctamente
             ->assertStatus(200);

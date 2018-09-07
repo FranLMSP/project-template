@@ -68,10 +68,6 @@ Route::group([
     });
 
     //Esta ruta es usada para probar la sesión
-    Route::get('protected', function() { 
-        return response()->json([
-            'message' => '¡Bienvenido!'
-        ]); 
-    });
+    Route::get('protected', 'TestController@test');
 
 });
