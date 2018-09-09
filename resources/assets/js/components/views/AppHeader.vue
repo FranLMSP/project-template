@@ -11,11 +11,17 @@
             <b-collapse is-nav id="nav_collapse">
 
                 <b-navbar-nav class="navMenu">
-                    <template v-for="module in modules" v-if="!module.api">
-
-                        <nav-menu :module="module"></nav-menu>
-
-                    </template>
+                    <b-nav-item-dropdown right>
+                        <template slot="button-content">
+                            <em>
+                                Menú
+                            </em>
+                        </template>
+                        <template v-for="module in modules" v-if="!module.api">
+                            <header-menu :selected="selected" :module="module"></header-menu>
+                        </template>
+                        
+                    </b-nav-item-dropdown>
                 </b-navbar-nav>
 
                 <!-- Right aligned nav items -->
@@ -38,10 +44,10 @@
             </b-collapse>
         </b-navbar>
 
-        <div id="sidebar" class="sidebar-fixed position-fixed">
+        <div id="sidebar" class="sidebar-fixed position-fixed p-0">
             <a class="logo-wrapper"><img alt="" class="img-fluid" src=""/></a>
             <template v-for="module in modules" v-if="!module.api">
-                <header-menu :module="module" ></header-menu>
+                <header-menu :selected="selected" :module="module" ></header-menu>
             </template>
         </div>
     </header>
@@ -51,18 +57,19 @@
 
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import HeaderMenu from './HeaderMenu.vue'
-import NavMenu from './NavMenu.vue'
 
 export default {
     name: 'app-header',
     components: {
         HeaderMenu,
-        NavMenu
     },
     data() {
         return {
             activeItem: 1,
             modules: [],
+            selected: {
+                id: 0,
+            }
         }
     },
     methods: {
@@ -70,8 +77,11 @@ export default {
             axios.get(`/api/modules/menu`)
                 .then( res => {
                     this.modules = res.data.modules
+
+                    this.findSelected(res.data.modules)
                 })
                 .catch( err => {
+                    console.log(err)
                     alert('Ocurrió un error al listar los módulos')
                 })
         },
@@ -79,6 +89,18 @@ export default {
             this.$store.commit('logout')
             this.$router.push('/login')
         },
+        findSelected(modules) {
+            for(let i=0; i<modules.length; i++) {
+                if(modules[i].childs.length == 0) {
+                    if(this.$route.fullPath.indexOf(modules[i].url) !== -1 && !modules[i].api) {
+                        this.selected.id = modules[i].id
+                        return true
+                    }
+                } else {
+                    this.findSelected(modules[i].childs)
+                }
+            }
+        }
     },
     computed: {
         icons() {
@@ -90,7 +112,6 @@ export default {
             return this.$store.getters.currentUser
         },
         title() {
-            console.log(this.$route.meta)
             return this.$route.meta.title
         }
     },
